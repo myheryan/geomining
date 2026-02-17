@@ -1,0 +1,43 @@
+---
+title: "Tutorial Next.js Enterprise"
+publishedAt: "2026-02-16"
+category: "Web Development"
+tags: ["Next.js", "MDX", "Tailwind CSS"]
+description: "Panduan lengkap menambahkan kategori dan tag."
+---
+
+Selamat datang di artikel demonstrasi. Di sini kita akan menguji bagaimana **Table of Contents** di samping kanan akan mengikuti posisi scroll kamu secara otomatis.
+
+## Mengapa Navigasi Penting?
+
+Navigasi yang baik membantu pembaca memahami struktur konten tanpa harus melakukan scroll manual berkali-kali. Dengan *ScrollSpy*, pembaca tahu persis di bagian mana mereka berada.
+
+### Pengalaman Pengguna (UX)
+User experience meningkat drastis ketika navigasi bersifat reaktif. Indikator aktif yang bergerak halus memberikan kesan aplikasi yang "hidup".
+
+### SEO dan Accessibility
+Struktur heading yang benar tidak hanya membantu fitur *ScrollSpy*, tetapi juga memudahkan mesin pencari (Google) untuk mengindeks konten blog kamu.
+
+## Persiapan Library
+
+Untuk membuat fitur ini, kita menggunakan beberapa library utama yang sudah kita instal sebelumnya:
+
+1.  **mdx-bundler**: Pengolah konten MDX.
+2.  **rehype-slug**: Memberikan ID otomatis pada heading.
+3.  **Framer Motion**: Untuk animasi indikator navigasi yang mulus.
+
+
+
+## Implementasi Kode
+
+Berikut adalah contoh blok kode yang akan diwarnai secara otomatis oleh `rehype-pretty-code` yang sudah kita konfigurasikan:
+
+```typescript {1, 4-6} showLineNumbers
+// Contoh Hook ScrollSpy sederhana
+export function useScrollSpy() {
+  const [activeId, setActiveId] = useState("");
+  
+  // Logika Intersection Observer di sini...
+  // Baris ini akan terlihat di-highlight
+  return activeId;
+}

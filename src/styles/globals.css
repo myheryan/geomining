@@ -181,7 +181,7 @@ body {
 }
 
 @layer utilities {
-  @variants dark {
+
     .bg-dark {
       background-color: #0a1e2b;
     }
@@ -200,7 +200,6 @@ body {
       background-color: rgba(0, 0, 0, 0.3);
     }
     
-  }
 }
 /* Memberikan jarak agar heading tidak tertutup sticky header saat diklik dari TOC */
 h2, h3 {

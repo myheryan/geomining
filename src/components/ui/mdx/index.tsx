@@ -148,9 +148,12 @@ export const mdxComponents = {
     />
   ),
 
-  pre: (props: MdxProps) => (
-    <div className="my-10 rounded-[2rem] overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl">
-      <CodeBlock {...props} />
-    </div>
-  ),
+// Di dalam file mdx/index.tsx (bagian mdxComponents)
+pre: ({ children, ...props }: MdxProps) => (
+  <div className="my-10 rounded-[2rem] overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl">
+    {/* Menggunakan casting 'as any' di sini adalah solusi paling efektif 
+        untuk komponen yang di-import secara dynamic di Next.js */}
+    <CodeBlock {...(props as any)}>{children}</CodeBlock>
+  </div>
+),
 };

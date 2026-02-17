@@ -1,28 +1,26 @@
 'use client';
 
-import { useState, ReactElement, isValidElement } from 'react';
+import { useState, ReactElement, isValidElement, ReactNode } from 'react';
 import { Copy, Check } from 'lucide-react';
 
-// 1. Definisikan interface untuk props dari elemen anak (biasanya tag <code>)
+// Gunakan ReactNode untuk kompatibilitas luas
+interface CodeBlockProps {
+  children?: ReactNode; 
+  filename?: string;
+}
+
 interface ChildProps {
   children?: React.ReactNode;
   className?: string;
 }
-
-interface CodeBlockProps {
-  children: ReactElement<ChildProps>; // Beri tahu TS bahwa children punya props tertentu
-  filename?: string;
-}
-
 export default function CodeBlock({ children, filename }: CodeBlockProps) {
   const [isCopied, setIsCopied] = useState(false);
 
-  const copy = () => {
-    // 2. Gunakan isValidElement untuk memastikan children adalah elemen React yang sah
+const copy = () => {
     if (isValidElement(children)) {
-      const codeContent = children.props.children;
+      // Akses langsung dengan casting ke any atau ChildProps
+      const codeContent = (children.props as ChildProps).children;
       
-      // Pastikan kontennya adalah string sebelum dicopy
       if (typeof codeContent === 'string') {
         navigator.clipboard.writeText(codeContent);
         setIsCopied(true);
@@ -49,7 +47,7 @@ export default function CodeBlock({ children, filename }: CodeBlockProps) {
       </button>
 
       <div className="p-4 overflow-x-auto text-sm leading-relaxed font-mono">
-        {/* Konten kode dari MDX akan dirender di sini */}
+        {/* Render tag <code> yang dikirim oleh MDX */}
         {children}
       </div>
     </div>

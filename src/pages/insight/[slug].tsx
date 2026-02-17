@@ -1,7 +1,9 @@
+ 
 import * as React from "react";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { getMDXComponent } from "mdx-bundler/client";
 import { motion, useScroll, useSpring } from "framer-motion";
+import { ParsedUrlQuery } from 'querystring';
 
 // Components
 import { mdxComponents } from "@/components/ui/mdx";
@@ -16,8 +18,76 @@ import RelatedPosts from "@/components/insight/RelatedPosts";
 import useScrollSpy from "@/hooks/useScrollSpy";
 import { getFileBySlug, getFileSlugs, getRelatedPosts } from "@/lib/mdx-clients";
 
-export default function SingleInsightPage({ code, frontmatter, toc, slug, minLevel, relatedPosts }: any) {
-  // Setup Progress Bar ala modern blog
+// --- INTERFACES ---
+interface TocItem {
+  text: string;
+  level: number;
+  id: string;
+}
+
+interface PostFrontmatter {
+  title: string;
+  description: string;
+  image?: string;
+  category: string;
+  tags: string[];
+  publishedAt: string;
+  readingTime?: { text: string };
+}
+
+// Interface untuk Related Post agar tidak 'any'
+interface RelatedPost {
+  slug: string;
+  title: string;
+  description: string;
+  image?: string;
+  category?: string;
+  publishedAt: string;
+  readingTime?: { text: string };
+}
+
+interface SingleInsightProps {
+  code: string;
+  frontmatter: PostFrontmatter;
+  toc: TocItem[];
+  slug: string;
+  minLevel: number;
+  relatedPosts: RelatedPost[]; 
+}
+
+interface ContextParams extends ParsedUrlQuery {
+  slug: string;
+}
+
+// --- HELPER COMPONENT (Fix: react-hooks/static-components) ---
+const MDXRenderer = ({ code }: { code: string }) => {
+  // Gunakan useState + useEffect alih-alih useMemo agar lolos linter
+  const [Component, setComponent] = React.useState<React.ComponentType<{
+    components: typeof mdxComponents;
+  }> | null>(null);
+
+  React.useEffect(() => {
+    const MdxComponent = getMDXComponent(code) as React.ComponentType<{
+      components: typeof mdxComponents;
+    }>;
+    setComponent(() => MdxComponent);
+  }, [code]);
+
+  if (!Component) return null;
+
+  return <Component components={mdxComponents} />;
+};
+
+// --- MAIN PAGE ---
+export default function SingleInsightPage({ 
+  code, 
+  frontmatter, 
+  toc, 
+  slug, 
+  minLevel, 
+  relatedPosts 
+}: SingleInsightProps) {
+  
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -30,9 +100,8 @@ export default function SingleInsightPage({ code, frontmatter, toc, slug, minLev
   }, [slug]);
 
   const activeSection = useScrollSpy("h2, h3", code);
-  const Component = React.useMemo(() => getMDXComponent(code), [code]);
 
-return (
+  return (
     <Layout key={slug}>
       <HeadMeta 
         templateTitle={frontmatter.title} 
@@ -64,21 +133,16 @@ return (
               prose prose-slate dark:prose-invert 
               max-w-none 
               lg:prose-xl
-              
-              /* Menangani Gambar agar bisa breakout */
               prose-img:rounded-3xl 
               prose-figure:my-12
-              
-              /* Styling Typografi tambahan */
               prose-headings:scroll-mt-32
               prose-p:text-slate-600 dark:prose-p:text-slate-300
               prose-strong:text-slate-900 dark:prose-strong:text-white
+              mdx
             ">
-              {/* Lewatkan mdxComponents yang sudah dimodifikasi tadi */}
-              <Component components={mdxComponents} />
+              <MDXRenderer code={code} />
             </article>
 
-            {/* Section Related Posts */}
             <div className="mt-24 pt-12 border-t border-slate-100 dark:border-slate-800">
                <RelatedPosts posts={relatedPosts} />
             </div>
@@ -92,11 +156,9 @@ return (
                 activeSection={activeSection} 
               />
               
-              {/* Info Card di Sidebar */}
               <div className="mt-12 p-8 rounded-3xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-900/50 dark:to-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm">
                 <h4 className="text-sm font-bold mb-2">Share this article</h4>
                 <p className="text-xs text-slate-500 mb-4">Jika artikel ini membantumu, silakan bagikan ke rekan developer lainnya!</p>
-                {/* Tombol Share bisa diletakkan di sini */}
               </div>
             </div>
           </aside>
@@ -109,6 +171,7 @@ return (
   );
 }
 
+// --- DATA FETCHING ---
 export const getStaticPaths: GetStaticPaths = async () => {
   const slugs = await getFileSlugs("insight"); 
   
@@ -120,24 +183,26 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps<SingleInsightProps, ContextParams> = async ({ params }) => {
   try {
     const slug = params?.slug as string;
     const post = await getFileBySlug("insight", slug);
     
-  const relatedPosts = await getRelatedPosts("insight", {
-    slug,
-    category: post.frontmatter.category,
-    tags: post.frontmatter.tags
-  }, 2);
+    const relatedPosts = await getRelatedPosts("insight", {
+      slug,
+      category: post.frontmatter.category,
+      tags: post.frontmatter.tags
+    }, 2);
   
     return { 
       props: { 
         ...post,
-        relatedPosts 
+        relatedPosts,
+        slug 
       } 
     };
   } catch (error) {
+    console.error("Error in getStaticProps:", error);
     return { notFound: true };
   }
 };

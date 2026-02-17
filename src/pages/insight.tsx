@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { format, isValid } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, Calendar, Clock, ChevronRight, X } from 'lucide-react'; 
+import { Search, Calendar, Clock, X } from 'lucide-react'; 
 import { getAllFilesFrontmatter } from "@/lib/mdx-clients";
 import Layout from '@/components/layout';
 import HeadMeta from '@/components/headMeta';

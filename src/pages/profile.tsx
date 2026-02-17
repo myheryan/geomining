@@ -1,12 +1,11 @@
 'use client';
 
-import * as React from "react";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import { 
   MapPin, Mail, Github, Linkedin, Instagram, 
-  Download, Terminal, Cpu, Zap, Briefcase, 
-  GraduationCap, Calendar, ChevronRight
+   Terminal, Zap, Briefcase, 
+  GraduationCap, ChevronRight
 } from "lucide-react";
 import Image from "next/image";
 
@@ -39,9 +38,10 @@ const education = [
   }
 ];
 
+/*
 const birthYear = 1996; // Ganti dengan tahun lahirmu
   const currentYear = new Date().getFullYear();
-  const myAge = currentYear - birthYear;
+  const myAge = currentYear - birthYear; */
 
 export default function AboutPage() {
   return (

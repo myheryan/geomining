@@ -103,7 +103,7 @@ export default function Hero() {
             >
               <div className="flex -space-x-2">
                 {trustedUserImages.map((src, i) => (
-                  <img key={i} src={src} alt="Client" className="size-6 rounded-full border border-white/50" />
+                  <motion.img key={i} src={src} alt="Client" className="size-6 rounded-full border border-white/50" />
                 ))}
               </div>
               <span className="text-xs text-gray-700 font-medium">Lorem ipsum dolor sit amet</span>
@@ -191,7 +191,7 @@ export default function Hero() {
                   onClick={() => setCurrent(allSlides.findIndex(s => s.id === thumb.id))}
                   className="w-20 h-14 rounded-xl overflow-hidden border-2 border-transparent hover:border-blue-500 transition-all hover:scale-105 shadow-md group relative"
                 >
-                  <img src={thumb.image} className="w-full h-full object-cover" alt="thumbnail" />
+                  <motion.img src={thumb.image} className="w-full h-full object-cover" alt="thumbnail" />
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
                 </button>
               ))}

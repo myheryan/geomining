@@ -1,9 +1,26 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { format, isValid } from 'date-fns';
-import { Calendar, Clock, ChevronRight, ArrowUpRight } from 'lucide-react';
+import { Calendar, Clock, ArrowUpRight } from 'lucide-react';
 
-export default function RelatedPosts({ posts }: { posts: any[] }) {
+// 1. Definisikan Interface agar Lolos Husky/ESLint
+interface RelatedPost {
+  slug: string;
+  title: string;
+  description: string;
+  image?: string;
+  category?: string;
+  publishedAt: string;
+  readingTime?: {
+    text: string;
+  };
+}
+
+interface RelatedPostsProps {
+  posts: RelatedPost[];
+}
+
+export default function RelatedPosts({ posts }: RelatedPostsProps) {
   // Pastikan ada post, jika tidak return null
   if (!posts || posts.length === 0) return null;
 
@@ -32,8 +49,8 @@ export default function RelatedPosts({ posts }: { posts: any[] }) {
         </Link>
       </div>
 
-      {/* --- GRID CARD (Style Disamakan dengan InsightPage) --- */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 md:gap-8">
+      {/* --- GRID CARD --- */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {displayPosts.map((post) => {
           // Safety Date Logic
           const dateObj = post.publishedAt ? new Date(post.publishedAt) : null;
@@ -57,6 +74,7 @@ export default function RelatedPosts({ posts }: { posts: any[] }) {
                       alt={post.title}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-tr from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900">

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
-import { ChevronRight, Hash } from "lucide-react"; // Gunakan lucide untuk sentuhan premium
+import { ChevronRight, Hash } from "lucide-react";
 
 interface TOCItem {
   id: string;
@@ -25,27 +25,36 @@ export default function TableOfContents({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const itemRefs = React.useRef<Map<string, HTMLAnchorElement>>(new Map());
 
-  // Hitung progres baca (index seksi aktif / total seksi)
+  // 1. STATE UNTUK POSISI GARIS (Agar tidak baca ref saat render)
+  const [lineStyle, setLineStyle] = React.useState({ height: 0, top: 0 });
+
   const activeIndex = toc.findIndex((item) => item.id === activeSection);
   const progress = toc.length > 0 ? Math.max(0, ((activeIndex + 1) / toc.length) * 100) : 0;
 
-  // Efek Enterprise: Auto-scroll sidebar agar item aktif selalu terlihat
-  React.useEffect(() => {
-    if (activeSection && containerRef.current) {
+  // 2. KALKULASI POSISI DI DALAM EFFECT
+  React.useLayoutEffect(() => {
+    if (activeSection) {
       const activeElement = itemRefs.current.get(activeSection);
       if (activeElement) {
-        const container = containerRef.current;
-        const scrollOffset = activeElement.offsetTop - container.offsetHeight / 2;
-        container.scrollTo({ top: scrollOffset, behavior: "smooth" });
+        setLineStyle({
+          height: activeElement.offsetHeight,
+          top: activeElement.offsetTop,
+        });
+
+        // Auto-scroll sidebar
+        if (containerRef.current) {
+          const container = containerRef.current;
+          const scrollOffset = activeElement.offsetTop - container.offsetHeight / 2;
+          container.scrollTo({ top: scrollOffset, behavior: "smooth" });
+        }
       }
     }
-  }, [activeSection]);
+  }, [activeSection, toc]);
 
   if (!toc || toc.length === 0) return null;
 
   return (
     <div className="flex flex-col space-y-6">
-      {/* Header dengan Progres Statis */}
       <div className="px-4 space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500">
@@ -70,7 +79,6 @@ export default function TableOfContents({
         className="relative max-h-[calc(100vh-25rem)] overflow-y-auto scrollbar-hide px-2"
       >
         <nav className="relative flex flex-col border-l border-slate-100 dark:border-slate-800 ml-4">
-          {/* Active Line Indicator (Meluncur) */}
           <AnimatePresence>
             {activeSection && (
               <motion.div
@@ -78,9 +86,10 @@ export default function TableOfContents({
                 className="absolute left-[-1.5px] w-[2px] bg-sky-500 z-10 shadow-[0_0_8px_rgba(14,165,233,0.5)]"
                 initial={false}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                // 3. GUNAKAN STYLE DARI STATE
                 style={{
-                  height: itemRefs.current.get(activeSection)?.offsetHeight || 0,
-                  top: itemRefs.current.get(activeSection)?.offsetTop || 0,
+                  height: lineStyle.height,
+                  top: lineStyle.top,
                 }}
               />
             )}
@@ -111,7 +120,6 @@ export default function TableOfContents({
                   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
-                {/* Background Highlight saat Aktif */}
                 {isActive && (
                   <motion.div
                     layoutId="active-pill-bg"
@@ -120,7 +128,6 @@ export default function TableOfContents({
                   />
                 )}
 
-                {/* Indikator Bullet/Icon */}
                 <span className="absolute left-0 flex items-center justify-center -translate-x-1/2">
                   {isSubItem ? (
                     <div className={clsx(
@@ -139,7 +146,6 @@ export default function TableOfContents({
                   {text}
                 </span>
 
-                {/* Indikator Panah saat Aktif (Optional) */}
                 {isActive && (
                   <motion.span 
                     initial={{ x: -5, opacity: 0 }}
@@ -155,7 +161,6 @@ export default function TableOfContents({
         </nav>
       </div>
 
-      {/* Footer Insight */}
       <div className="px-4 pt-4 border-t border-slate-50 dark:border-slate-800">
         <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />

@@ -3,14 +3,26 @@ import { join } from "path";
 import matter from "gray-matter";
 import { bundleMDX } from "mdx-bundler";
 import readingTime from "reading-time";
-import remarkGfm from "remark-gfm"; // Tambahkan ini untuk tabel & tasklist
-import { ContentType, PickFrontmatter, PostContent } from "@/types/insight";
+import remarkGfm from "remark-gfm";
+import remarkUnwrapImages from 'remark-unwrap-images';
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
-import remarkUnwrapImages from 'remark-unwrap-images'; // 1. Import plugin
 
-// ... (import lainnya tetap sama)
+import { ContentType, PickFrontmatter, PostContent } from "@/types/insight";
 
+// --- INTERFACES UNTUK MENGHILANGKAN ERROR 'ANY' ---
+interface TocItem {
+  text: string;
+  level: number;
+  id: string;
+}
+
+interface RehypeNode {
+  children: Array<{ type: string; value: string }>;
+  properties: {
+    className?: string[];
+  };
+}
 
 const ROOT = process.cwd();
 const CONTENT_PATH = join(ROOT, "src", "contents");
@@ -23,12 +35,11 @@ export async function getFileSlugs(type: ContentType): Promise<string[]> {
     const folderPath = join(CONTENT_PATH, type);
     const files = await readdir(folderPath);
     
-    // Filter hanya .mdx dan hapus ekstensinya untuk jadi slug
     return files
       .filter((f) => f.endsWith(".mdx"))
       .map((f) => f.replace(/\.mdx$/, ""));
   } catch (error) {
-    console.error(` Error reading slugs for ${type}:`, error);
+    console.error(`Error reading slugs for ${type}:`, error);
     return [];
   }
 }
@@ -36,26 +47,21 @@ export async function getFileSlugs(type: ContentType): Promise<string[]> {
 /**
  * Mendapatkan metadata semua file
  */
-// src/lib/mdx-clients.ts
-
 export async function getAllFilesFrontmatter<T extends ContentType>(
   type: T
-): Promise<Array<PickFrontmatter<T> & { slug: string; readingTime: any; content: string }>> {
+): Promise<Array<PickFrontmatter<T> & { slug: string; readingTime: ReturnType<typeof readingTime>; content: string }>> {
   const slugs = await getFileSlugs(type);
 
   const posts = await Promise.all(
     slugs.map(async (slug) => {
-      // Baca file
       const source = await readFile(join(CONTENT_PATH, type, `${slug}.mdx`), "utf8");
-      
-      // PENTING: Ambil 'content' disini
       const { data, content } = matter(source); 
 
       return {
         ...(data as PickFrontmatter<T>),
         slug,
         readingTime: readingTime(source),
-        content: content || "", // Pastikan selalu string, jangan undefined
+        content: content || "",
       };
     })
   );
@@ -65,16 +71,14 @@ export async function getAllFilesFrontmatter<T extends ContentType>(
     return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
   });
 }
+
 /**
  * Mendapatkan konten penuh dengan MDX Bundler
  */
-
-
-
 export async function getFileBySlug<T extends ContentType>(
   type: T,
   slug: string
-): Promise<PostContent<T> & { toc: any[], minLevel: number }> {
+): Promise<PostContent<T> & { toc: TocItem[], minLevel: number }> {
   try {
     const filePath = join(CONTENT_PATH, type, `${slug}.mdx`);
     const source = await readFile(filePath, "utf8");
@@ -89,7 +93,6 @@ export async function getFileBySlug<T extends ContentType>(
       source,
       cwd: join(CONTENT_PATH, type),
       mdxOptions(options) {
-        // 2. Tambahkan remarkUnwrapImages di sini
         options.remarkPlugins = [
           ...(options.remarkPlugins ?? []), 
           remarkGfm, 
@@ -103,18 +106,15 @@ export async function getFileBySlug<T extends ContentType>(
             rehypePrettyCode,
             {
               theme: "one-dark-pro",
-              onVisitLine(node: any) {
+              onVisitLine(node: RehypeNode) {
                 if (node.children.length === 0) {
                   node.children = [{ type: "text", value: " " }];
                 }
               },
-              onVisitHighlightedLine(node: any) {
-                if (!node.properties.className) {
-                  node.properties.className = [];
-                }
-                node.properties.className.push("line--highlighted");
+              onVisitHighlightedLine(node: RehypeNode) {
+                node.properties.className = [...(node.properties.className ?? []), "line--highlighted"];
               },
-              onVisitHighlightedWord(node: any) {
+              onVisitHighlightedWord(node: RehypeNode) {
                 node.properties.className = ["word--highlighted"];
               },
             },
@@ -126,11 +126,11 @@ export async function getFileBySlug<T extends ContentType>(
 
     // --- LOGIKA EXTRAKSI TOC ---
     const lines = source.split("\n");
-    const toc = lines
+    const toc: TocItem[] = lines
       .filter((line) => line.match(/^###?\s/))
       .map((line) => {
         const text = line.replace(/^###?\s/, "").trim();
-        const level = line.split(" ")[0].length;
+        const level = (line.match(/^#+/) || [""])[0].length;
         const id = text
           .toLowerCase()
           .replace(/[^\w\s-]/g, "")
@@ -147,7 +147,7 @@ export async function getFileBySlug<T extends ContentType>(
         ...(frontmatter as PickFrontmatter<T>),
         readingTime: readingTime(source),
         wordCount: source.split(/\s+/gu).length,
-      } as any,
+      } as PostContent<T>["frontmatter"], // Cast ke tipe yang benar
       toc,
       minLevel,
     };
@@ -156,23 +156,23 @@ export async function getFileBySlug<T extends ContentType>(
     throw new Error(`File not found: ${slug}`);
   }
 }
-// src/lib/mdx.provider.ts
 
+/**
+ * Mendapatkan Related Posts
+ */
 export async function getRelatedPosts<T extends ContentType>(
   type: T,
   currentPost: { slug: string; category: string; tags: string[] },
-  maxCount: number = 2
+  maxCount = 2
 ) {
   const allPosts = await getAllFilesFrontmatter(type);
 
   return allPosts
-    .filter((post) => post.slug !== currentPost.slug) // Jangan sertakan diri sendiri
+    .filter((post) => post.slug !== currentPost.slug)
     .map((post) => {
       let score = 0;
-      // Berikan skor jika kategori sama
       if (post.category === currentPost.category) score += 5;
       
-      // Berikan skor untuk setiap tag yang sama
       const sharedTags = post.tags?.filter((tag: string) => 
         currentPost.tags.includes(tag)
       );
@@ -180,6 +180,6 @@ export async function getRelatedPosts<T extends ContentType>(
 
       return { ...post, score };
     })
-    .sort((a, b) => b.score - a.score) // Urutkan berdasarkan skor tertinggi
+    .sort((a, b) => b.score - a.score)
     .slice(0, maxCount);
 }

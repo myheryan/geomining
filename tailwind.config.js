@@ -1,6 +1,5 @@
 import typography from '@tailwindcss/typography';
-
-// tailwind.config.js
+import tailwindAnimate from 'tailwindcss-animate' // <--- Import di sini// tailwind.config.js
 module.exports = {
 darkMode: 'class', // TAMBAHKAN BARIS INI
 theme: {
@@ -23,7 +22,7 @@ content: [
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
 plugins: [
-  require("tailwindcss-animate"), [typography],
+  [tailwindAnimate], [typography],
 ],
   
 }

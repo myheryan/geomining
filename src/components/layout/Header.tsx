@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from 'next-themes';
-import { Home, LayoutGrid, Info, Send, Sun, Moon, Menu, X, ChevronRight } from 'lucide-react';
+import { Home, LayoutGrid, Info, Send, Sun, Moon, Menu } from 'lucide-react';
 import { clsx } from 'clsx';
 
 const navLinks = [
@@ -136,7 +136,7 @@ export default function Header() {
                   const isActive = pathname === link.href;
                   return (
                     <Link
-                      key={link.href}
+                      key={i}
                       href={link.href}
                       onClick={() => setIsOpen(false)}
                       className={clsx(

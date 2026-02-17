@@ -28,12 +28,10 @@ export default function useScrollSpy(
       }
     });
 
-    // Ambil semua ID yang sedang terlihat (true)
     const activeIds = Object.keys(visibleElements.current).filter(
       (id) => visibleElements.current[id]
     );
 
-    // Set seksi aktif ke elemen pertama yang terlihat di viewport
     if (activeIds.length > 0) {
       setActiveSection(activeIds[0]);
     }
@@ -45,20 +43,15 @@ export default function useScrollSpy(
     setActiveSection(null);
 
     let observer: IntersectionObserver | null = null;
-    let rafId: number;
 
-    // 2. Preload Guard: Gunakan requestAnimationFrame
-    // Ini menunggu 1 frame render agar browser sempat memproses DOM MDX baru
-    rafId = requestAnimationFrame(() => {
+    // PERBAIKAN: Gunakan 'const' untuk rafId karena hanya di-assign sekali dalam effect ini
+    const rafId = requestAnimationFrame(() => {
       const elements = document.querySelectorAll(selectors);
       
       if (elements.length === 0) return;
 
       observer = new IntersectionObserver(handleIntersect, {
         root,
-        // rootMargin: atas kanan bawah kiri
-        // Kita gunakan -offset px di atas dan -80% di bawah agar seksi 
-        // dianggap aktif saat menyentuh area 20% teratas layar.
         rootMargin: `-${offset}px 0px -80% 0px`,
         threshold: 0,
       });

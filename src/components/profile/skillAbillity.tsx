@@ -4,7 +4,7 @@ import * as React from 'react';
 import { motion } from "framer-motion";
 import {
   Code2, Palette, Braces, Server, 
-  Atom, FileCode, Layers, Box, Database, Cpu
+  Atom, FileCode, Box, Database
 } from "lucide-react";
 import { clsx } from "clsx";
 

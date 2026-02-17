@@ -148,6 +148,7 @@ export const mdxComponents = {
     />
   ),
 
+<<<<<<< HEAD
 // Di dalam file mdx/index.tsx (bagian mdxComponents)
 pre: ({ children, ...props }: MdxProps) => (
   <div className="my-10 rounded-[2rem] overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl">
@@ -157,3 +158,28 @@ pre: ({ children, ...props }: MdxProps) => (
   </div>
 ),
 };
+=======
+  // Ubah bagian pre di dalam mdxComponents menjadi seperti ini:
+pre: (props: MdxProps) => {
+  // 1. Ambil children dari props
+  const { children } = props;
+
+  // 2. Validasi: Jika children bukan elemen React yang valid, kembalikan standar
+  if (!React.isValidElement(children)) {
+    return (
+      <div className="my-10 rounded-[2rem] overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl">
+        <pre {...props} />
+      </div>
+    );
+  }
+
+  // 3. Jika valid, oper ke CodeBlock. 
+  // CodeBlock biasanya akan membedah children.props.children (teks kodenya)
+  return (
+    <div className="my-10 rounded-[2rem] overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl">
+      <CodeBlock {...props} />
+    </div>
+  );
+},
+};
+>>>>>>> f6b5ba442c7688345965362da3ac711c847b318d

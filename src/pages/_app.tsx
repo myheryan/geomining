@@ -3,13 +3,12 @@ import { AppProps } from "next/app";
 import { ThemeProvider } from "next-themes";
 
 
-
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider
         attribute="class"
         defaultTheme="light"
-        enableSystem={true}
+        enableSystem={false}
         disableTransitionOnChange>
       <Component {...pageProps} />
     </ThemeProvider>

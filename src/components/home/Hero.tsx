@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, ArrowRightIcon, ZapIcon, CheckIcon } from 'lucide-react';
+import Image from "next/image";
+import { ChevronLeft, ChevronRight, ZapIcon, CheckIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const allSlides = [
@@ -73,12 +74,19 @@ export default function Hero() {
             <rect width="100%" height="100%" fill="url(#blueDiagonalGradient)" />
           </svg>
         </div>
+               <div 
+          className="absolute inset-0 opacity-[0.4]" 
+          style={{ 
+            backgroundImage: 'linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px)', 
+            backgroundSize: '40px 40px' 
+          }} 
+        />
 <div className="absolute top-0 left-1/4 w-[800px] h-[800px] rounded-full blur-[120px]" />
           <div className="absolute inset-0 -z-10 pointer-events-none opacity-10" aria-hidden="true">
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               viewBox="6000 8900 67733.32 38100" 
-              className="h-[1500px] bg-[50%_20%]"
+              className="absolute -bottom-70 h-[800px] md:h-[1500px] md:top-0 bg-[50%_20%]"
             >
               <g id="Layer_x0020_1">
                 <motion.path animate={{  y: [0, -20, 0], rotate: [0, 1, 0] }}
@@ -103,7 +111,7 @@ export default function Hero() {
             >
               <div className="flex -space-x-2">
                 {trustedUserImages.map((src, i) => (
-                  <motion.img key={i} src={src} alt="Client" className="size-6 rounded-full border border-white/50" />
+                  <Image key={i} src={src} width={300} height={300} alt="Client" className="size-6 rounded-full border border-white/50" />
                 ))}
               </div>
               <span className="text-xs text-gray-700 font-medium">Lorem ipsum dolor sit amet</span>
@@ -127,12 +135,6 @@ export default function Hero() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Button */}
-            <div className="flex gap-4 mb-10">
-              <a href="#contact" className="px-8 py-3 rounded-full bg-blue-600 text-white font-bold flex items-center gap-3 hover:bg-blue-700 transition shadow-lg shadow-blue-500/20">
-                LOREM IPSUM <ArrowRightIcon size={18} />
-              </a>
-            </div>
 
             {/* Badges */}
             <div className="flex flex-row gap-4 py-2">
@@ -191,7 +193,7 @@ export default function Hero() {
                   onClick={() => setCurrent(allSlides.findIndex(s => s.id === thumb.id))}
                   className="w-20 h-14 rounded-xl overflow-hidden border-2 border-transparent hover:border-blue-500 transition-all hover:scale-105 shadow-md group relative"
                 >
-                  <motion.img src={thumb.image} className="w-full h-full object-cover" alt="thumbnail" />
+                  <Image src={thumb.image} width={300} height={300} className="w-full h-full object-cover" alt="thumbnail" />
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
                 </button>
               ))}

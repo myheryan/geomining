@@ -1,115 +1,163 @@
-'use client';
+"use client";
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, Calendar } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Clock } from "lucide-react";
 
+// Dummy data
 const insights = [
-  // ... data insights tetap sama ...
   {
-    id: "LOG-01",
-    title: "DI BALIK GARIS KUNING",
-    slug: "rahasia-sebelum-tambang",
-    date: "Feb 18, 2026",
-    category: "Exploration",
-    image: "https://images.unsplash.com/photo-1578319439584-104c94d37305?q=80&w=2070&auto=format&fit=crop",
-    desc: "Proses detektif ilmiah dan pemodelan cadangan sebelum mobilisasi alat berat."
-  },
-  {
-    id: "LOG-02",
-    title: "IOT MONITORING LERENG",
-    slug: "iot-pada-slope-stability",
-    date: "Feb 17, 2026",
+    title: "Masa Depan Eksplorasi Geologi Berbasis AI",
+    excerpt: "Bagaimana kecerdasan buatan membantu memetakan potensi sumber daya mineral dengan akurasi yang belum pernah ada sebelumnya.",
     category: "Technology",
-    image: "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?q=80&w=2070&auto=format&fit=crop",
-    desc: "Integrasi sensor otomatis untuk deteksi dini pergerakan lereng guna mitigasi risiko."
+    date: "12 Feb 2026",
+    readTime: "5 min read",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800",
+    author: { name: "Irfan Marwanza", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100" },
+    slug: "#"
   },
   {
-    id: "LOG-03",
-    title: "AIR TANAH & STABILITAS",
-    slug: "air-tanah-vs-kestabilan",
-    date: "Feb 16, 2026",
-    category: "Geotechnic",
-    image: "https://images.unsplash.com/photo-1590013330462-0ca506456094?q=80&w=2070&auto=format&fit=crop",
-    desc: "Analisis tekanan air pori dan pengaruhnya terhadap faktor keamanan lereng (FoP)."
+    title: "Menjaga Keselamatan di Area Tambang Terbuka",
+    excerpt: "Protokol keselamatan terbaru yang wajib diterapkan untuk meminimalisir risiko geoteknikal di lapangan.",
+    category: "Safety",
+    date: "08 Feb 2026",
+    readTime: "4 min read",
+    image: "https://images.unsplash.com/photo-1541888087545-081561081546?q=80&w=800",
+    author: { name: "Kemal Ghifari", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" },
+    slug: "#"
+  },
+  {
+    title: "Pemodelan Sumber Daya Batubara 3D",
+    excerpt: "Langkah demi langkah membangun model geologi 3D yang akurat menggunakan perangkat lunak terkini.",
+    category: "Tutorial",
+    date: "01 Feb 2026",
+    readTime: "7 min read",
+    image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=800",
+    author: { name: "Faidh Muhlis", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100" },
+    slug: "#"
   }
 ];
 
-export const LatestInsights = () => {
+export default function LatestInsights() {
   return (
-    <section className="py-20 bg-white dark:bg-[#050608] relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="relative py-24 bg-slate-50 dark:bg-slate-950 transition-colors duration-500 overflow-hidden">
+      
+      {/* --- BACKGROUND GRIDS --- */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {/* Light Mode Grid */}
+        <div 
+          className="absolute inset-0 opacity-20 dark:opacity-0 transition-opacity duration-500" 
+          style={{ 
+            backgroundImage: 'linear-gradient(#c4c5c5 1px, transparent 1px), linear-gradient(90deg, #c4c5c5 1px, transparent 1px)', 
+            backgroundSize: '80px 80px' 
+          }}    
+        />
+        {/* Dark Mode Grid */}
+        <div 
+          className="absolute inset-0 opacity-0 dark:opacity-20 transition-opacity duration-500" 
+          style={{ 
+            backgroundImage: 'linear-gradient(#0ea5e9 1px, transparent 1px), linear-gradient(90deg, #0ea5e9 1px, transparent 1px)', 
+            backgroundSize: '80px 80px' 
+          }} 
+        />
+        {/* Dot Grid (Adaptive) */}
+        <div 
+          className="absolute inset-0 text-slate-300 dark:text-sky-400/10 transition-colors duration-500" 
+          style={{ 
+            backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', 
+            backgroundSize: '20px 20px' 
+          }} 
+        />
+        {/* Ambient Glow for Dark Mode */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/2 bg-sky-500/5 dark:bg-sky-500/10 blur-[120px] rounded-full pointer-events-none transition-opacity duration-500" />
+      </div>
+
+      <div className="container relative z-10 mx-auto px-6 max-w-7xl">
         
-        {/* Header Section */}
-        <div className="flex justify-between items-center mb-10">
-          <div className="flex items-center gap-4">
-            <h2 className="text-xl font-black tracking-tighter uppercase dark:text-white">Technical Dossier</h2>
-            <div className="h-px w-16 bg-orange-600 opacity-50" />
+        {/* --- HEADER --- */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+          <div className="flex-none max-w-2xl">
+            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight mb-4">
+              Insight: Exploring the future
+            </h2>
+            <p className="text-slate-600 dark:text-slate-400 text-lg">
+              Temukan pemikiran terbaru, panduan, dan tren terkini seputar dunia geologi dan pertambangan.
+            </p>
           </div>
-          <Link href="/insight" className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 hover:text-orange-500 transition-all">
-            Archive +
-          </Link>
+          
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="pb-1"
+          >
+            <Link 
+              href="/insight" 
+              className="inline-flex items-center gap-2 font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 transition-colors group"
+            >
+              Lihat semua artikel 
+              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
         </div>
 
-        {/* Compact Grid 16:9 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* --- GRID KARTU ARTIKEL --- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {insights.map((post, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              viewport={{ once: true }}
-              // PERUBAHAN DI SINI: h-[320px] diganti menjadi aspect-video
-              className="relative aspect-video group overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm"
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: i * 0.1, duration: 0.5 }}
             >
-              {/* Image Background */}
-              <Image 
-                src={post.image} 
-                alt={post.title} 
-                fill 
-                // object-cover memastikan gambar mengisi area 16:9 tanpa distorsi
-                className="object-cover transition-transform duration-1000 group-hover:scale-105 grayscale-[0.3] group-hover:grayscale-0"
-              />
-              
-              {/* Top Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80" />
-
-              {/* Category Tag */}
-              <div className="absolute top-4 left-4 z-20">
-                <span className="px-2 py-0.5 bg-orange-600 text-[8px] font-black text-white uppercase tracking-widest">
-                  {post.category}
-                </span>
-              </div>
-
-              {/* Bottom Glass Panel */}
-              <div className="absolute inset-x-0 bottom-0 px-6 py-3 backdrop-blur-md bg-white/5 dark:bg-black/40 border-t border-white/10 z-10 transition-all duration-500 group-hover:bg-orange-600/10">
-                <div className="space-y-3">
-                  {/* Metadata */}
-                  <div className="flex justify-between items-center font-mono text-[8px] text-white/40 uppercase tracking-[0.2em]">
-                    <span>{post.id}</span>
-                    <span className="flex items-center gap-1"><Calendar size={8} /> {post.date}</span>
-                  </div>
+              <Link href={post.slug} className="block group h-full">
+                <article className="flex flex-col h-full bg-white dark:bg-slate-900/60 rounded-[2rem] overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl dark:shadow-none dark:hover:shadow-2xl dark:hover:shadow-sky-900/20 hover:-translate-y-2 transition-all duration-300 backdrop-blur-sm">
                   
-                  {/* Title & Desc */}
-                  <div className="space-y-1">
-                    <h3 className="text-base font-black leading-tight text-white tracking-tight uppercase group-hover:text-orange-500 transition-colors">
-                      <Link href={`/insight/${post.slug}`} className="after:absolute after:inset-0">
-                        {post.title}
-                      </Link>
+                  {/* Image Container */}
+                  <div className="relative h-56 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+                    <Image 
+                      src={post.image} 
+                      alt={post.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Floating Category Badge */}
+                    <div className="absolute top-4 left-4 px-4 py-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider shadow-sm">
+                      {post.category}
+                    </div>
+                  </div>
+
+                  {/* Content Container */}
+                  <div className="flex flex-col flex-grow p-6 lg:p-8">
+                    <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mb-4 font-medium">
+                      <span>{post.date}</span>
+                      <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
+                      <span className="flex items-center gap-1.5">
+                        <Clock size={14} /> {post.readTime}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-snug mb-3 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors duration-300">
+                      {post.title}
                     </h3>
-                    <p className="text-[11px] leading-relaxed text-white/60 line-clamp-2 font-medium">
-                      {post.desc}
+                    
+                    <p className="text-slate-600 dark:text-slate-400 line-clamp-3 mb-6 flex-grow leading-relaxed">
+                      {post.excerpt}
                     </p>
+
                   </div>
-                  
-                </div>
-              </div>
+                </article>
+              </Link>
             </motion.div>
           ))}
         </div>
+
       </div>
     </section>
   );
-};
+}

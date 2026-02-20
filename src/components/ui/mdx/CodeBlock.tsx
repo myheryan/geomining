@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, ReactElement, isValidElement, ReactNode } from 'react';
+import { useState, isValidElement, ReactNode } from 'react';
 import { Copy, Check } from 'lucide-react';
 
 // Gunakan ReactNode untuk kompatibilitas luas

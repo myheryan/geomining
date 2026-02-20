@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from 'next-themes';
@@ -41,15 +42,19 @@ export default function Header() {
             : 'py-6 bg-transparent'
         )}
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center justify-between">
             
-            {/* LOGO */}
-            <Link href="/" className="group flex items-center">
-              <div className="h-10 w-10 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-slate-900 font-black shadow-lg group-active:scale-90 transition-transform">
-                H
-              </div>
-            </Link>
+                      {/* LOGO */}
+          <Link href="/" className="relative h-12 w-48 transition-transform active:scale-95">
+            <Image 
+              src="/img/logogeo.png" 
+              alt="geomining" 
+              fill 
+              priority
+              className="object-contain object-left"
+            />
+          </Link>
 
             {/* DESKTOP INTEGRATED NAV (Menu + Toggle) */}
             <div className="hidden md:flex items-center gap-1 p-1 bg-slate-200/40 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-slate-200/50 dark:border-white/10">

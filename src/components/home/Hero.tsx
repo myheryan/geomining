@@ -1,215 +1,379 @@
-"use client";
 
-import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, ZapIcon, CheckIcon } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from "react";
+import { ArrowUpRight, Play, Pause, Volume2, VolumeX, Maximize, Minimize, Image as ImageIcon, ChevronLeft, ChevronRight, GripHorizontal } from 'lucide-react';
+import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 
 const allSlides = [
-  {
-    id: 1,
-    title: "Lorem ipsum dolor sit amet",
-    description: "Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1000",
-    tag: "Lorem • 2024"
-  },
-  {
-    id: 2,
-    title: "Sed ut perspiciatis unde omnis",
-    description: "Iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.",
-    image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1000",
-    tag: "Ipsum • Lorem"
-  },
-  {
-    id: 3,
-    title: "At vero eos et accusamus et iusto",
-    description: "Odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti.",
-    image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=1000",
-    tag: "Dolor • Sit"
-  },
-  {
-    id: 4,
-    title: "Quis autem vel eum iure ea",
-    description: "Reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur vel illum.",
-    image: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?q=80&w=1000",
-    tag: "Amet • Ad"
-  },
+  { id: 1, type: "video", subtitle: "CHAPTER 1", title: "The Beginning", description: "Langkah awal menuju platform masa depan dengan kecepatan tak tertandingi.", media: "/video/geo-video.mp4" },
+  { id: 2, type: "image", subtitle: "CHAPTER 2", title: "Data Insights", description: "Visualisasi data real-time untuk keputusan yang lebih tajam.", media: "/img/materi/materi-1.jpeg" },
+  { id: 3, type: "video", subtitle: "CHAPTER 3", title: "Global Cloud", description: "Terhubung ke seluruh dunia dengan infrastruktur cloud 99.9% uptime.", media: "/video/geo-video.mp4" },
+  { id: 4, type: "image", subtitle: "CHAPTER 4", title: "Core Security", description: "Pertahanan tingkat militer untuk data sensitif perusahaan Anda.", media: "/img/materi/materi-2.jpeg" },
+  { id: 5, type: "video", subtitle: "CHAPTER 5", title: "AI Automation", description: "Mesin pintar yang mengambil alih tugas repetitif Anda tanpa henti.", media: "https://cdn.coverr.co/videos/coverr-cyberpunk-city-night-light-2559/1080p.mp4" }
 ];
 
-export default function Hero() {
+const formatTime = (time: number) => {
+  if (isNaN(time)) return "0:00";
+  const min = Math.floor(time / 60);
+  const sec = Math.floor(time % 60);
+  return `${min}:${sec.toString().padStart(2, '0')}`;
+};
+
+export default function UltimateRotaryHero() {
   const [current, setCurrent] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  
+  const [progress, setProgress] = useState(0);
+  const [currentTimeDisplay, setCurrentTimeDisplay] = useState("0:00");
+  const [durationDisplay, setDurationDisplay] = useState("0:00");
+  
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const trustedUserImages = [
-    'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=50',
-    'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50',
-    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop'
-  ];
+  const currentSlide = allSlides[current];
 
-  const thumbnails = allSlides.filter((_, index) => index !== current);
+  // --- 1. FUNGSI MASTER UNTUK GANTI SLIDE (BEBAS ERROR LINTER) ---
+  const changeSlide = (newIndex: number) => {
+    setCurrent(newIndex);
+    setProgress(0);
+    setCurrentTimeDisplay("0:00");
+  };
+
+  const handleNext = () => changeSlide(current === allSlides.length - 1 ? 0 : current + 1);
+  const handlePrev = () => changeSlide(current === 0 ? allSlides.length - 1 : current - 1);
+
+  // Algoritma Relatif Roda
+  const getDiff = (index: number, currentIndex: number, length: number) => {
+    let diff = index - currentIndex;
+    if (diff < -2) diff += length;
+    if (diff > 2) diff -= length;
+    return diff;
+  };
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrent((prev) => (prev === allSlides.length - 1 ? 0 : prev + 1));
-    }, 5000);
-    return () => clearInterval(timer);
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    const handleFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
   }, []);
 
-  const nextSlide = () => setCurrent((prev) => (prev === allSlides.length - 1 ? 0 : prev + 1));
-  const prevSlide = () => setCurrent((prev) => (prev === 0 ? allSlides.length - 1 : prev - 1));
+  // --- 2. USE-EFFECT BERSIH (HANYA UNTUK PLAY VIDEO) ---
+  useEffect(() => {
+    if (currentSlide.type === "video") {
+      if (videoRef.current) {
+        videoRef.current.load();
+        const playPromise = videoRef.current.play();
+        if (playPromise !== undefined) playPromise.catch(() => setIsPlaying(false));
+      }
+    }
+  }, [current, currentSlide.type]); // Linter bahagia karena array dependency lengkap!
+
+  // Deteksi Swipe Layar Mobile
+  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const swipeThreshold = 40; 
+    if (info.offset.x < -swipeThreshold || info.offset.y < -swipeThreshold) {
+      handleNext();
+    } else if (info.offset.x > swipeThreshold || info.offset.y > swipeThreshold) {
+      handlePrev();
+    }
+  };
+
+  const togglePlay = (e?: React.MouseEvent<HTMLElement>) => {
+    if (e) e.stopPropagation();
+    if (currentSlide.type !== "video") return;
+    if (videoRef.current) {
+      if (isPlaying) videoRef.current.pause();
+      else videoRef.current.play();
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const toggleMute = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (currentSlide.type !== "video") return;
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    if (videoRef.current) videoRef.current.muted = newMutedState;
+  };
+
+  const toggleFullScreen = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (!document.fullscreenElement) {
+      containerRef.current?.requestFullscreen().catch(err => console.error(err));
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current && currentSlide.type === "video") {
+      const currentVideoTime = videoRef.current.currentTime;
+      const totalDuration = videoRef.current.duration;
+      setProgress((currentVideoTime / totalDuration) * 100);
+      setCurrentTimeDisplay(formatTime(currentVideoTime));
+      if (durationDisplay === "0:00" && !isNaN(totalDuration)) setDurationDisplay(formatTime(totalDuration));
+    }
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (videoRef.current && currentSlide.type === "video") {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const percentage = (e.clientX - rect.left) / rect.width;
+      videoRef.current.currentTime = percentage * videoRef.current.duration;
+      setProgress(percentage * 100);
+    }
+  };
+
+  // --- 3. MORPH VARIANT BERSIH (FIX TYPESCRIPT 'as const') ---
+  const morphVariant = {
+    animate: ({ diff, isDesktop }: { diff: number, isDesktop: boolean }) => {
+      const isActive = diff === 0;
+      const absDiff = Math.abs(diff);
+
+      if (isActive) {
+        return {
+          x: isDesktop ? "-140px" : "0vw",
+          y: isDesktop ? "0px" : "-120px",
+          width: isDesktop ? "720px" : "88vw",
+          height: isDesktop ? "405px" : "49.5vw", 
+          borderRadius: "24px",
+          opacity: 1,
+          zIndex: 50,
+          boxShadow: "0px 30px 60px -15px rgba(14,165,233,0.5)",
+          transition: { type: "spring" as const, stiffness: 120, damping: 16 }
+        };
+      } else {
+        const size = isDesktop 
+          ? (absDiff === 1 ? "88px" : "64px") 
+          : (absDiff === 1 ? "64px" : "48px");
+          
+        let xPos, yPos;
+
+        if (isDesktop) {
+          xPos = absDiff === 1 ? "360px" : "420px"; 
+          yPos = diff === 1 ? "180px" : diff === -1 ? "-180px" : diff === 2 ? "320px" : "-320px";
+        } else {
+          yPos = absDiff === 1 ? "100px" : "130px"; 
+          xPos = diff === 1 ? "25vw" : diff === -1 ? "-25vw" : diff === 2 ? "40vw" : "-40vw";
+        }
+
+        return {
+          x: xPos,
+          y: yPos,
+          width: size,
+          height: size,
+          borderRadius: "999px",
+          opacity: absDiff === 1 ? 0.8 : 0.3,
+          zIndex: 10 - absDiff,
+          boxShadow: "0px 10px 20px rgba(0,0,0,0.6)",
+          transition: { type: "spring" as const, stiffness: 140, damping: 15 }
+        };
+      }
+    },
+    hover: { scale: 1.12, filter: "brightness(1.3)", cursor: "pointer" }
+  };
 
   return (
-    <section id="home" className="relative z-10 overflow-hidden">
-      <div className="mx-auto px-4 min-h-screen w-full flex items-center justify-center">
+    <section className="relative z-10 overflow-hidden min-h-screen bg-[#020617] flex items-center justify-center pt-24 pb-32 lg:py-20 text-white font-sans">
+      
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.1]" style={{ backgroundImage: `linear-gradient(to right, #38bdf8 1px, transparent 1px), linear-gradient(to bottom, #38bdf8 1px, transparent 1px)`, backgroundSize: '60px 60px', maskImage: 'radial-gradient(ellipse at center, black 20%, transparent 70%)', WebkitMaskImage: 'radial-gradient(ellipse at center, black 20%, transparent 70%)' }} />
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-sky-600/30 blur-[150px] rounded-full mix-blend-screen animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-700/20 blur-[150px] rounded-full mix-blend-screen" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-[1500px] mx-auto px-6 lg:px-10 flex flex-col-reverse lg:flex-row gap-6 lg:gap-16 items-center">
         
-        {/* --- LAYER BACKGROUND --- */}
-        <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
-              <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden" aria-hidden="true">
-          <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="blueDiagonalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#05a7e1" stopOpacity="0.1" />
-                <stop offset="100%" stopColor="#013cff" stopOpacity="0.5" />
-              </linearGradient>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#blueDiagonalGradient)" />
-          </svg>
-        </div>
-               <div 
-          className="absolute inset-0 opacity-[0.4]" 
-          style={{ 
-            backgroundImage: 'linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px)', 
-            backgroundSize: '40px 40px' 
-          }} 
-        />
-<div className="absolute top-0 left-1/4 w-[800px] h-[800px] rounded-full blur-[120px]" />
-          <div className="absolute inset-0 -z-10 pointer-events-none opacity-10" aria-hidden="true">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              viewBox="6000 8900 67733.32 38100" 
-              className="absolute -bottom-70 h-[800px] md:h-[1500px] md:top-0 bg-[50%_20%]"
-            >
-              <g id="Layer_x0020_1">
-                <motion.path animate={{  y: [0, -20, 0], rotate: [0, 1, 0] }}
-                    transition={{ duration: 6, repeat: Infinity,  ease: "easeInOut"}} fill="#767676" fillRule="nonzero" d="M28876.93 16474.39c-949.57,-263.8 -2358.73,-460.65 -3155.95,-549.71 -1817.99,-203.05 -6671.63,-409.59 -8249.52,240.48 -1658.99,683.43 -766.6,2340.87 -1053.05,3647.44 -20.43,92.98 -46.7,184.08 -80.33,273.06 -2.04,5.27 -4.69,10.31 -6.73,15.66 -15.16,39.01 -31.2,77.79 -49.39,115.91 -20.62,43.28 -43.28,85.98 -68.17,127.99 -28.28,47.94 -58.36,93.45 -89.45,137.39 -3.5,4.96 -7.11,9.84 -10.72,14.8 -31.1,43.05 -63.4,84.79 -96.95,124.65 0.19,0.11 0.3,0.11 0.39,0.19 -744.41,884.93 -2094.14,946.21 -3283.83,1139.52 -19.66,3.2 -40.36,6.81 -61.94,10.7 -601.37,108.61 -1172.77,342.97 -1682.04,680.7 -563.43,373.73 -1272.16,941.43 -1677.37,1637.4 -1115.49,1915.63 233.09,3951.63 2073.73,4656.56 -769.4,-1146.72 -653.1,-2336.22 277.53,-3337.06 1.46,-1.54 2.92,-3.09 4.27,-4.66 262.37,-280.94 607.9,-469.6 982.38,-556.51 734.28,-170.39 2115.17,-498.58 3053.85,-767.95 1658.91,-476.02 1336.72,-1587.04 1264.47,-2752.89 -2.81,-45.9 -5.23,-91.98 -7.19,-138.1 -0.5,-10.97 -0.77,-21.97 -1.16,-33.05 -1.38,-37.44 -2.34,-74.87 -2.92,-112.41 -0.19,-15.77 -0.3,-31.51 -0.39,-47.28 -0.11,-33.16 0.2,-66.21 0.78,-99.37 0.38,-18.19 0.77,-36.36 1.35,-54.55 1.07,-30.82 2.72,-61.67 4.57,-92.37 1.16,-19.66 2.23,-39.31 3.81,-58.94 2.31,-29.77 5.54,-59.51 8.73,-89.28 2.24,-19.93 4.08,-39.86 6.62,-59.71 4.08,-31.4 9.43,-62.63 14.69,-93.94 2.92,-17.78 5.24,-35.59 8.66,-53.29 19.05,-100.36 44.24,-199.93 77.59,-298.45 317.8,-938.79 1273.6,-1160.41 2159.11,-1267.37 2176.83,-263.05 4881.18,-217.35 7065.98,8.36 949.68,98.13 1889.55,314.88 2827.27,507.03 4.38,-131.26 7.39,-263.05 7.39,-395.48 0,-849.72 -92.38,-1677.76 -266.07,-2475.47z"/>
-                <motion.path animate={{  y: [0, -20, 0], rotate: [0, 1, 0] }}
-                    transition={{ duration: 6, repeat: Infinity,  ease: "easeInOut"}} fill="#555555" fillRule="nonzero" d="M23650.03 20451.84c-42.78,0.97 -85.56,2.24 -128.26,3.5 -29.28,0.97 -58.64,1.35 -87.91,2.43 0.08,0.27 0.19,0.58 0.39,0.77 -199.63,7 -398.4,16.54 -595.52,31.01 -934.83,68.75 -2425.48,276.37 -2585.24,1437.28 -115.64,839.89 190.2,1632.26 -69.91,2462.61 -541.47,1728.23 -2392.31,1514.19 -3992.37,1719.19 -412.32,52.79 -1319.71,202.66 -1803.21,434.79 -466.18,223.64 -815.79,473.65 -1150.41,1041.86 -283.37,481.18 -352.89,1070.85 -134.88,1584.89 134.49,316.92 356.81,585.21 671.96,734.4 103.37,49.01 981.69,326.15 1107.05,312.84 0.66,0.19 1.44,0.77 2.13,0.85 186.42,-205.97 429.82,-1138.72 1665.3,-1443.6 1169.07,-288.41 2050.61,171.07 2980.83,-271.4 2195.8,-1044.48 420.01,-3215.39 1580.7,-4453.01 483.42,-515.39 1693.42,-715.02 2867.07,-775.61l0 0.08c29.08,-1.46 57.94,-2.7 87.03,-3.97 41.43,-1.95 82.94,-3.69 124.29,-5.34 33.35,-1.27 66.79,-2.54 100.06,-3.62 56.98,-1.73 113.76,-3.39 170.16,-4.57 707.16,-15.74 1360.84,11.77 1782.98,41.93 613.71,43.85 1276.63,244.75 1901.12,363.11 366.04,-820.56 639.3,-1691.38 806.65,-2599.43 -1702.93,-432.45 -3536.88,-654.65 -5300.01,-610.99z"/>
-                <motion.path animate={{  y: [0, -20, 0], rotate: [0, 1, 0] }}
-                    transition={{ duration: 6, repeat: Infinity,  ease: "easeInOut"}} fill="#555555" fillRule="nonzero" d="M28085.78 14110c-7.85,-17.01 -16.12,-33.93 -24.2,-50.86 -3,-6.12 -6.04,-12.35 -8.96,-18.55 -22.24,-47.55 -45.59,-94.44 -68.36,-141.68 -18.74,-38.82 -36.94,-77.9 -56.21,-116.41 -11.27,-22.47 -23.12,-44.63 -34.51,-67.1 -3.99,-7.69 -8.16,-15.27 -12.04,-23.04 -34.35,-67.01 -69.17,-133.83 -104.75,-200.15 -5.35,-10.09 -10.5,-20.32 -15.93,-30.43 -12.96,-24.12 -26.47,-47.83 -39.59,-71.76 -7.69,-14.11 -15.85,-27.81 -23.65,-41.81 -42.09,-76.14 -84.21,-152.3 -128.07,-227.36 0,0 0,0 0,0 -98.79,-169.12 -202.55,-334.92 -309.53,-498.38 -11.27,-17.2 -22.55,-34.32 -33.93,-51.44 -67.67,-102.41 -137.39,-203.43 -208.2,-303.6 -15.66,-22.17 -31.51,-44.16 -47.36,-66.22 -24.59,-34.23 -48.63,-68.96 -73.52,-102.9 -0.85,-0.19 -1.73,-0.27 -2.51,-0.47 -202.38,-276.17 -415.16,-544.19 -641.05,-800.52 -1294.8,-162.58 -2634.72,-237.75 -3808.37,-290.57 -2112.14,-95.01 -6077.96,-312.84 -8024.98,319.27 -314.19,101.99 -549.24,227.82 -726.71,372.24 -0.79,0.11 -1.57,0.3 -2.23,0.38 -6.04,4.96 -11.49,10.12 -17.42,15.08 -19.43,16.35 -38.21,32.86 -56.21,49.59 -13.81,13.04 -27.31,26.16 -40.35,39.39 -11.96,12.16 -23.24,24.51 -34.51,36.94 -21.7,23.73 -42.21,47.85 -61.36,72.47 -7.69,9.7 -15.38,19.43 -22.66,29.36 -12.46,17 -24.7,34.04 -36.08,51.43 -3.31,4.88 -6.23,9.93 -9.35,14.89 -22.08,34.51 -42.28,69.82 -60.48,105.71 -3.42,6.62 -6.81,13.31 -10.11,20.01 -9.35,19.27 -18.67,38.43 -26.94,57.97 -328.6,771.14 104.84,1814.88 -164.64,2781.78 -6.01,21.67 -14.39,41.41 -21.09,62.52 -119.8,378.36 -414.67,966.91 -710.39,1198.16 -363.89,284.53 -4032.11,1757.01 -4726.07,2242.43 -55.32,38.71 -108.72,78.4 -160.46,118.95 -18.35,14.47 -35.58,29.55 -53.47,44.24 -32.48,26.44 -65.14,52.79 -96.18,80.02 -21.39,18.77 -41.32,38.13 -62.02,57.17 -25.97,23.93 -52.32,47.66 -77.24,72.17 -21.97,21.58 -42.67,43.77 -63.87,65.74 -21.8,22.66 -43.96,45.13 -64.86,68.06 -21.89,24.12 -42.59,48.63 -63.51,73.13 -18.58,21.7 -37.43,43.28 -55.32,65.25 -21.31,26.27 -41.43,53.01 -61.67,79.66 -15.85,20.9 -31.89,41.6 -47.16,62.71 -20.51,28.51 -40.05,57.48 -59.51,86.45 -13.24,19.74 -26.63,39.39 -39.39,59.32 -19.74,30.93 -38.51,62.24 -56.98,93.56 -11,18.58 -21.97,36.93 -32.47,55.62 -18.67,33.25 -36.47,66.9 -53.89,100.64 -8.85,17.12 -17.7,34.24 -26.16,51.44 -17.59,35.7 -34.32,71.67 -50.45,107.86 -7,15.63 -13.92,31.21 -20.62,46.95 -16.23,38.12 -31.7,76.55 -46.5,115.25 -5.24,13.81 -10.5,27.7 -15.55,41.7 -14.96,40.75 -29.08,81.71 -42.31,123.03 -3.78,11.85 -7.47,23.73 -11.16,35.59 -13.43,43.58 -26.08,87.32 -37.66,131.48 -2.51,9.43 -4.85,18.97 -7.27,28.39 -11.89,46.59 -22.86,93.26 -32.67,140.31 -1.46,6.92 -2.84,13.81 -4.19,20.81 -10.12,49.59 -19.27,99.4 -27.23,149.57 -0.58,3.81 -1.08,7.69 -1.66,11.47 -21,135.46 -33.74,272.48 -39.58,410.59 -38.32,914.36 249.05,1872.62 764.16,2695.5 87.52,-1106.25 702.01,-2016.08 1601.41,-2595.94 118.83,-76.63 242.71,-147.42 370.89,-212.2 174.35,-88.1 865.58,-540.28 1669.77,-931.29 1001.83,-487 2136.48,-921.78 2173.33,-935.87 2030.27,-778.83 290.07,-2951.09 1312.5,-4214.3 514.04,-635.1 1705.57,-836.69 2850.22,-907.58 531.35,-27.4 1030.04,-36.67 1424.16,-43.45 174.85,-2.53 337.32,-5.26 483.69,-9.73 29.86,-0.99 59.9,-1.84 88.29,-2.92 3106.75,-119.52 6147.7,3.12 9210.49,522.89 -46.76,-110.48 -95.49,-219.97 -145.58,-328.61z"/>
-              </g>
-            </svg>
-          </div>
-        </div>
+        {/* --- KIRI: TYPOGRAPHY --- */}
+        <div className="flex-1 w-full flex flex-col items-start mt-2 lg:mt-0 z-20">
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="flex items-center gap-2 px-4 py-2 rounded-full border border-sky-500/20 bg-sky-500/10 backdrop-blur-md mb-6">
+            <span className="w-2 h-2 rounded-full bg-sky-400 animate-ping" />
+            <span className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sky-400">
+              {currentSlide.subtitle}
+            </span>
+          </motion.div>
 
-        {/* --- KONTEN UTAMA --- */}
-        <div className="flex flex-col-reverse md:flex-row gap-10 items-center max-w-7xl w-full">
-          <div className="text-left flex-1">
-            {/* Trusted Users */}
-            <motion.a href="#!" className="inline-flex items-center gap-3 pl-2 pr-4 py-1 rounded-full mb-2 bg-white/30 backdrop-blur-sm border border-white/20"
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="flex -space-x-2">
-                {trustedUserImages.map((src, i) => (
-                  <Image key={i} src={src} width={300} height={300} alt="Client" className="size-6 rounded-full border border-white/50" />
-                ))}
-              </div>
-              <span className="text-xs text-gray-700 font-medium">Lorem ipsum dolor sit amet</span>
-            </motion.a>
-
-            {/* Teks Dinamis */}
+          <div className="min-h-[140px] md:min-h-[220px]">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={current}
-                initial={{ x: -30, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: 30, opacity: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <h1 className="text-4xl md:text-6xl font-bold leading-tight bg-clip-text text-transparent bg-linear-to-r from-sky-500 to-blue-800">
-                  {allSlides[current].title}
+              <motion.div key={current} initial={{ opacity: 0, x: -30, filter: "blur(10px)" }} animate={{ opacity: 1, x: 0, filter: "blur(0px)" }} exit={{ opacity: 0, x: 30, filter: "blur(10px)" }} transition={{ duration: 0.5, ease: "easeOut" }} className="flex flex-col gap-4">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[5rem] font-black leading-[1.05] text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 drop-shadow-sm">
+                  {currentSlide.title}
                 </h1>
-                <p className="max-w-lg mb-8 text-gray-700 text-lg leading-relaxed">
-                  {allSlides[current].description}
+                <p className="text-base sm:text-lg text-slate-400 max-w-lg leading-relaxed font-medium">
+                  {currentSlide.description}
                 </p>
               </motion.div>
             </AnimatePresence>
-
-
-            {/* Badges */}
-            <div className="flex flex-row gap-4 py-2">
-              <div className="bg-white/30 flex items-center gap-3 p-3 rounded-2xl backdrop-blur-md border border-white/40 shadow-sm">
-                <div className="bg-white/50 p-2 rounded-full">
-                  <ZapIcon className="size-5 text-sky-600" />
-                </div>
-                <div>
-                  <div className='bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-blue-800 font-bold text-sm'>Lorem ipsum dolor</div>
-                  <div className="text-gray-600 text-xs">Consectetur adipiscing elit</div>
-                </div>
-              </div>
-
-              <div className="bg-white/30 flex items-center gap-3 p-3 rounded-2xl backdrop-blur-md border border-white/40 shadow-sm">
-                <div className="bg-white/50 p-2 rounded-full">
-                  <CheckIcon className="size-5 text-cyan-600" />
-                </div>
-                <div>
-                  <div className='bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-blue-800 font-bold text-sm'>Sed ut perspiciatis</div>
-                  <div className="text-gray-600 text-xs">Natus error sit voluptatem</div>
-                </div>
-              </div>
-            </div>
           </div>
 
-          {/* SISI KANAN: Visual */}
-          <div className="flex-1 w-full mt-20 max-w-2xl relative">
-            <motion.div className="rounded-3xl overflow-hidden border border-white/30 shadow-2xl bg-white/10 p-2 backdrop-blur-sm"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.6 }}
-            >
-              <div className="relative aspect-16/10 rounded-2xl overflow-hidden">
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={current}
-                    src={allSlides[current].image}
-                    initial={{ scale: 1.1, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.9, opacity: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="w-full h-full object-cover"
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row items-center gap-4 mt-6 w-full sm:w-auto">
+            <button className="w-full sm:w-auto group relative px-10 py-4 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold rounded-xl shadow-[0_0_40px_-10px_rgba(14,165,233,0.6)] overflow-hidden transition-all duration-300">
+              <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+              <span className="relative flex items-center justify-center gap-2 text-lg">
+                Deploy Now <ArrowUpRight size={22} />
+              </span>
+            </button>
+          </motion.div>
+        </div>
+
+        {/* --- KANAN: HUD PEMUTAR & RODA KESATUAN --- */}
+        <div 
+          ref={containerRef}
+          className={`flex-[1.4] w-full relative min-h-[480px] lg:min-h-[700px] flex items-center justify-center 
+            ${isFullscreen ? 'fixed inset-0 z-50 bg-black !min-h-screen' : ''}
+          `}
+        >
+          {/* Overlay Khusus untuk Menangkap Swipe secara penuh */}
+          <motion.div 
+            onPanEnd={handleDragEnd} 
+            className="absolute inset-0 z-40 touch-pan-y" 
+            style={{ touchAction: 'pan-y' }} 
+          />
+
+          {allSlides.map((slide, index) => {
+            const diff = getDiff(index, current, allSlides.length);
+            const isActive = diff === 0;
+
+            return (
+              <motion.div
+                key={slide.id}
+                custom={{ diff, isDesktop }}
+                variants={morphVariant}
+                animate="animate"
+                whileHover={!isActive ? "hover" : ""}
+                onClick={() => !isActive && changeSlide(index)} // <-- FUNGSI MASTER DITERAPKAN DI SINI
+                className={`absolute bg-slate-900 overflow-hidden transform-gpu
+                  ${isActive ? 'border border-white/20 z-50' : 'border-2 border-white/10'}
+                `}
+              >
+                {/* KONTEN MEDIA */}
+                {slide.type === "video" ? (
+                  <video
+                    ref={isActive ? videoRef : null} 
+                    src={slide.media}
+                    muted={isActive ? isMuted : true}
+                    playsInline
+                    loop 
+                    className="absolute inset-0 w-full h-full object-cover"
+                    onTimeUpdate={isActive ? handleTimeUpdate : undefined}
                   />
+                ) : (
+                  <Image fill src={slide.media} alt={slide.title} className="absolute inset-0 w-full h-full object-cover" />
+                )}
+
+                {/* OVERLAY */}
+                <div className={`absolute inset-0 pointer-events-none transition-all duration-500
+                  ${isActive ? 'bg-gradient-to-b from-black/20 via-transparent to-black/90' : 'bg-black/50 group-hover:bg-black/20'}
+                `} />
+
+                {/* ICON THUMBNAIL BULAT */}
+                <AnimatePresence>
+                  {!isActive && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      {slide.type === "video" ? <Play className="w-6 h-6 sm:w-8 sm:h-8 text-white drop-shadow-md" /> : <ImageIcon className="w-6 h-6 sm:w-8 sm:h-8 text-white drop-shadow-md" />}
+                    </motion.div>
+                  )}
                 </AnimatePresence>
-                <div className="absolute left-4 top-4 px-3 py-1 rounded-full bg-black/30 backdrop-blur-md text-[10px] text-white uppercase font-bold border border-white/20">
-                  {allSlides[current].tag}
+
+                {/* KONTROL LAYAR UTAMA (AKTIF) */}
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3, delay: 0.2 }} className="absolute inset-0 w-full h-full">
+                      
+                      {slide.type === "video" && (
+                        <div className="absolute inset-0 z-10 flex items-center justify-center cursor-pointer" onClick={togglePlay}>
+                          <div className={`transition-all duration-300 ${isPlaying ? 'opacity-0 scale-90 hover:opacity-100 hover:scale-100' : 'opacity-100 scale-100'}`}>
+                            {!isPlaying && <div className="absolute inset-0 flex items-center justify-center"><div className="w-20 h-20 bg-sky-500/40 rounded-full animate-ping" /></div>}
+                            <button className="relative p-5 rounded-full bg-black/40 backdrop-blur-xl border border-white/20 hover:bg-sky-500/50 hover:border-sky-400 transition-all shadow-2xl">
+                              {isPlaying ? <Pause size={28} className="fill-white" /> : <Play size={28} className="fill-white ml-1" />}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="absolute top-4 left-4 right-4 sm:top-6 sm:left-6 sm:right-6 flex justify-between items-start z-20 pointer-events-none">
+                        <div className="px-4 py-1.5 bg-black/50 backdrop-blur-md rounded-full text-[10px] sm:text-xs font-bold border border-white/20 uppercase text-sky-400 tracking-widest">
+                          {slide.type}
+                        </div>
+                        <div className="flex gap-2 pointer-events-auto">
+                          {slide.type === "video" && (
+                            <button onClick={toggleMute} className="p-2.5 sm:p-3 rounded-full bg-black/50 hover:bg-white/20 backdrop-blur-md border border-white/10 transition-all text-white hover:text-sky-400">
+                              {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                            </button>
+                          )}
+                          <button onClick={toggleFullScreen} className="p-2.5 sm:p-3 rounded-full bg-black/50 hover:bg-white/20 backdrop-blur-md border border-white/10 transition-all text-white hover:text-sky-400 hidden sm:block">
+                            {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 z-20 flex flex-col gap-2 pointer-events-none">
+                        <div onClick={handleSeek} className="w-full h-2 bg-white/20 rounded-full relative overflow-hidden pointer-events-auto cursor-pointer group/progress">
+                          {slide.type === "video" ? (
+                            <div style={{ width: `${progress}%` }} className="absolute top-0 left-0 h-full bg-gradient-to-r from-sky-400 to-blue-600 rounded-full transition-all duration-75 ease-linear" />
+                          ) : (
+                            <div className="absolute top-0 left-0 h-full w-full bg-gradient-to-r from-sky-400 to-blue-600 rounded-full opacity-50" />
+                          )}
+                        </div>
+                        {slide.type === "video" && (
+                          <div className="flex justify-between items-center text-[10px] font-bold text-white/80 tracking-widest font-mono">
+                            <span>{currentTimeDisplay}</span>
+                            <span>{durationDisplay}</span>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+
+          {/* --- TUAS KENDALI (ROTARY HANDLE) --- */}
+          {!isFullscreen && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 }}
+              className={`absolute z-50 flex items-center justify-center
+                ${isDesktop 
+                  ? 'right-[-40px] top-1/2 -translate-y-1/2 rotate-90' 
+                  : 'bottom-[5px] sm:bottom-[10px] left-1/2 -translate-x-1/2' 
+                }
+              `}
+            >
+              <div className="flex items-center gap-4 bg-white/10 backdrop-blur-2xl border border-white/20 rounded-full px-6 py-2.5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] pointer-events-auto">
+                <button onClick={handlePrev} className="p-1 hover:text-sky-400 transition-colors active:scale-90">
+                  <ChevronLeft size={24} className="sm:w-6 sm:h-6" />
+                </button>
+                
+                <div className="flex flex-col items-center gap-1 opacity-60 px-2 cursor-grab active:cursor-grabbing">
+                  <GripHorizontal size={20} className="sm:w-5 sm:h-5" />
+                  <span className="text-[8px] font-bold tracking-widest uppercase mt-[-2px]">Swipe</span>
                 </div>
+
+                <button onClick={handleNext} className="p-1 hover:text-sky-400 transition-colors active:scale-90">
+                  <ChevronRight size={24} className="sm:w-6 sm:h-6" />
+                </button>
               </div>
             </motion.div>
+          )}
 
-            {/* Thumbnails */}
-            <div className="mt-6 flex gap-3 items-center">
-              {thumbnails.map((thumb) => (
-                <button
-                  key={thumb.id}
-                  onClick={() => setCurrent(allSlides.findIndex(s => s.id === thumb.id))}
-                  className="w-20 h-14 rounded-xl overflow-hidden border-2 border-transparent hover:border-blue-500 transition-all hover:scale-105 shadow-md group relative"
-                >
-                  <Image src={thumb.image} width={300} height={300} className="w-full h-full object-cover" alt="thumbnail" />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                </button>
-              ))}
-              
-              <div className="ml-auto flex gap-2">
-                <button onClick={prevSlide} className="p-2 rounded-full bg-white/80 hover:bg-white text-blue-900 shadow-sm border border-blue-100 transition">
-                  <ChevronLeft size={20} />
-                </button>
-                <button onClick={nextSlide} className="p-2 rounded-full bg-white/80 hover:bg-white text-blue-900 shadow-sm border border-blue-100 transition">
-                  <ChevronRight size={20} />
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes shimmer {
+          100% { transform: translateX(100%); }
+        }
+      `}} />
     </section>
   );
 }

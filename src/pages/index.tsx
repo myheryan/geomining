@@ -4,7 +4,7 @@ import Hero from "@/components/home/hero";
 import AboutUs from "@/components/home/aboutUs";
 import MentorExpertise from "@/components/home/mentorExpertise";
 import ContactSection from "@/components/contact";
-import { LatestInsights } from "@/components/home/latestInsights";
+import LatestInsights  from "@/components/home/latestInsights";
 /* ... import lainnya
 import { GetStaticProps } from 'next';
 

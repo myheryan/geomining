@@ -76,11 +76,15 @@ export default function ProjectsPage({ projects = [] }: ProjectsProps) {
     <Layout>
       <HeadMeta templateTitle="Projects" description="Open source projects and experiments." />
       
-      {/* Background Decorative Elements */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-sky-500/10 blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-purple-500/10 blur-[120px]" />
-      </div>
+          {/* Grid dibuat menggunakan linear-gradient CSS. Ukuran diatur via bg-[size:...] */}
+  <div className="absolute inset-0 pointer-events-none -z-20">
+    <div className="absolute inset-0 h-full w-full 
+      bg-[linear-gradient(to_right,#3b82f61a_1px,transparent_1px),linear-gradient(to_bottom,#3b82f61a_1px,transparent_1px)] 
+      dark:bg-[linear-gradient(to_right,#3b82f615_1px,transparent_1px),linear-gradient(to_bottom,#3b82f615_1px,transparent_1px)]
+      bg-[size:80px_80px] 
+      ">
+    </div>
+  </div>
 
       <main className="py-24 mx-auto max-w-7xl px-6 lg:px-8">
         

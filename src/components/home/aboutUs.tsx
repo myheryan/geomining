@@ -2,64 +2,74 @@
 
 import { motion } from "framer-motion";
 import { 
-  Database, 
-  ShieldAlert, 
-  Lightbulb, 
+  Network, 
+  TrendingUp, 
+  BookOpen, 
   Activity,
+  Cpu,
   Box
 } from "lucide-react";
 
+// --- DATA ---
 const values = [
   {
-    title: "Data Integrity",
-    desc: "Memastikan akurasi pemodelan geoteknik melalui validasi data lapangan yang ketat.",
-    icon: Database,
-    color: "bg-blue-600",
-    shadow: "shadow-blue-200"
+    title: "Collaboration & Community",
+    desc: "Membangun sinergi yang kuat dan ekosistem kerja yang saling mendukung untuk mencapai tujuan bersama.",
+    icon: Network,
+    // Menambahkan base color & dark mode hover state
+    iconColor: "text-slate-500 dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-400",
   },
   {
-    title: "Innovation-Driven",
-    desc: "Mengintegrasikan teknologi pemodelan 3D terkini untuk solusi tambang yang cerdas.",
-    icon: Lightbulb,
-    color: "bg-sky-500",
-    shadow: "shadow-sky-200"
+    title: "Improvement & Innovation",
+    desc: "Tidak pernah berhenti menantang status quo untuk meningkatkan kualitas, efisiensi, dan standar industri.",
+    icon: TrendingUp,
+    iconColor: "text-slate-500 dark:text-orange-400 group-hover:text-orange-600",
   },
   {
-    title: "Operational Safety",
-    desc: "Menjadikan stabilitas lereng dan keamanan personel sebagai prioritas mutlak.",
-    icon: ShieldAlert,
-    color: "bg-slate-800",
-    shadow: "shadow-slate-200"
+    title: "Knowledge Sharing",
+    desc: "Menjadikan pengalaman dan keahlian kolektif sebagai wawasan yang terbuka demi kemajuan operasional.",
+    icon: BookOpen,
+    iconColor: "text-slate-500 dark:text-emerald-400 group-hover:text-emerald-600",
+  },
+  {
+    title: "Technology-Driven",
+    desc: "Menjadikan teknologi dan data sebagai fondasi utama dalam setiap pengambilan keputusan dan solusi.",
+    icon: Cpu,
+    iconColor: "text-slate-500 dark:text-cyan-400 group-hover:text-cyan-600",
   }
 ];
-
-const stats = [
-  { label: "Experience", val: "8+ Years" },
-  { label: "Safety Record", val: "100%" },
-  { label: "Cost Savings", val: "25%" },
-  { label: "Tech Projects", val: "12+" }
-];
-
 
 
 export default function GeotechLightLeapfrog() {
   return (
-    <section className="relative w-full main-h-screen bg-[#f8fafc] text-slate-900 flex items-center overflow-hidden py-20 lg:py-0">
+    <section id="about" className="min-h-screen w-full snap-start snap-always relative bg-[#f8fafc] dark:bg-[#050608] text-slate-900 dark:text-white flex items-center overflow-hidden py-20 lg:py-0 transition-colors duration-500">
       
-      {/* --- LIGHT TECHNICAL BACKGROUND --- */}
+      {/* --- TECHNICAL BACKGROUND (DUAL THEME) --- */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* Subtle Grid - Engineered Look */}
+          {/* Light Mode Grid */}
         <div 
-          className="absolute inset-0 opacity-[0.4]" 
+          className="absolute inset-0 opacity-[0.2] dark:opacity-0 transition-opacity duration-500" 
           style={{ 
-            backgroundImage: 'linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px)', 
-            backgroundSize: '40px 40px' 
+            backgroundImage: 'linear-gradient(#cde3ff 1px, transparent 1px), linear-gradient(90deg, #cde3ff 1px, transparent 1px)', 
+            backgroundSize: '80px 80px' 
+          }}    
+        />
+        {/* Dark Mode Grid */}
+        <div 
+          className="absolute inset-0 opacity-0 dark:opacity-[0.2] transition-opacity duration-500" 
+          style={{ 
+            backgroundImage: 'linear-gradient(#0289ffd0 1px, transparent 1px), linear-gradient(90deg, #0289ffd0 1px, transparent 1px)', 
+            backgroundSize: '80px 80px' 
           }} 
         />
-        
-        {/* Atmospheric Gradients */}
-        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-blue-100/50 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-5%] left-[-5%] w-[400px] h-[400px] bg-slate-200/40 rounded-full blur-[100px]" />
+        <div className="absolute top-0 left-1 w-[800px] h-[320px] blur-[120px] bg-sky-300/30 dark:bg-sky-500/20 blur-[120px] opacity-0 dark:opacity-100" />
+        {/* 2. Sub-Grid Titik-titik Presisi (Adaptif Light/Dark) */}
+        <div className="absolute inset-0 text-[#cde3ff]/90 dark:text-sky-400/20 transition-colors duration-500" 
+          style={{ 
+            backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', 
+            backgroundSize: '20px 20px' 
+          }} 
+        />
       </div>
 
       <div className="container mx-auto px-6 lg:px-16 relative z-10">
@@ -73,8 +83,8 @@ export default function GeotechLightLeapfrog() {
               viewport={{ once: true }}
               className="flex items-center justify-center lg:justify-start gap-3"
             >
-              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-blue-600">Core Mission</span>
-              <div className="w-12 h-[1px] bg-blue-600/30 hidden lg:block" />
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-blue-600 dark:text-blue-400">Core Mission</span>
+              <div className="w-12 h-[1px] bg-blue-600/30 dark:bg-blue-400/30 hidden lg:block" />
             </motion.div>
 
             <motion.h1 
@@ -82,10 +92,10 @@ export default function GeotechLightLeapfrog() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tighter text-slate-950"
+              className="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tighter text-slate-950 dark:text-white"
             >
               Mastering <br />
-              <span className="text-blue-600 italic font-serif font-light">Ground </span> 
+              <span className="text-blue-600 dark:text-blue-400 italic font-serif font-light">Ground </span> 
               Intelligence.
             </motion.h1>
 
@@ -94,7 +104,7 @@ export default function GeotechLightLeapfrog() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              className="text-base md:text-xl text-slate-500 leading-relaxed max-w-xl mx-auto lg:mx-0"
+              className="text-base md:text-xl text-slate-500 dark:text-slate-400 leading-relaxed max-w-xl mx-auto lg:mx-0"
             >
               Kami mengolah data geoteknik yang kompleks menjadi visualisasi 3D yang intuitif, memberikan fondasi kuat bagi keputusan operasional tambang Anda.
             </motion.p>
@@ -106,10 +116,10 @@ export default function GeotechLightLeapfrog() {
               transition={{ delay: 0.5 }}
               className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4"
             >
-              <button className="px-8 py-4 bg-blue-600 text-white text-xs font-black uppercase tracking-widest rounded-full shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95">
+              <button className="px-8 py-4 bg-blue-600 text-white text-xs font-black uppercase tracking-widest rounded-full shadow-xl shadow-blue-200 dark:shadow-blue-900/20 hover:bg-blue-700 transition-all active:scale-95">
                 Technical Solutions
               </button>
-              <button className="px-8 py-4 bg-white border border-slate-200 text-slate-950 text-xs font-black uppercase tracking-widest rounded-full hover:bg-slate-50 transition-all">
+              <button className="px-8 py-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-slate-950 dark:text-white text-xs font-black uppercase tracking-widest rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
                 The Process
               </button>
             </motion.div>
@@ -124,13 +134,20 @@ export default function GeotechLightLeapfrog() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.4 + (i * 0.1) }}
-                className="p-8 bg-white border border-slate-100 rounded-[2rem] shadow-sm hover:shadow-xl hover:shadow-blue-500/5 transition-all group"
+                className="p-8 bg-white dark:bg-slate-900/40 backdrop-blur-sm border border-slate-100 dark:border-slate-800 rounded-[2rem] shadow-sm hover:shadow-xl dark:shadow-none dark:hover:border-slate-700 hover:shadow-blue-500/5 transition-all group"
               >
-                <div className={`w-12 h-12 ${v.color} ${v.shadow} rounded-2xl flex items-center justify-center text-white mb-6 group-hover:rotate-6 transition-all duration-500 shadow-lg`}>
-                  <v.icon size={22} strokeWidth={2} />
+                {/* Icon Wrapper dengan dynamic classes */}
+                <div className="flex flex-row items-end justify-between gap-2"> 
+
+                  <h3 className="self-end text-xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">{v.title}</h3>
+                  <div className={`rounded-2xl transition-all duration-500  group-hover:rotate-6 ${v.iconColor} `}>
+                  <v.icon size={60} className={`group-hover:rotate-12 transition-transform duration-1000 2z-1` } strokeWidth={2} />
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3 tracking-tight">{v.title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{v.desc}</p>
+
+
+                
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{v.desc}</p>
               </motion.div>
             ))}
 
@@ -140,7 +157,7 @@ export default function GeotechLightLeapfrog() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.7 }}
-              className="p-8 bg-slate-900 rounded-[2rem] flex flex-col justify-center text-white relative overflow-hidden group"
+              className="p-8 bg-slate-900 dark:bg-slate-950 dark:border border-slate-800 rounded-[2rem] flex flex-col justify-center text-white relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 p-4 opacity-20">
                 <Box size={80} className="group-hover:rotate-12 transition-transform duration-1000" />
@@ -152,16 +169,10 @@ export default function GeotechLightLeapfrog() {
           </div>
 
         </div>
-        <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-16 border-y border-slate-100 justify-center justify-center dark:border-slate-800">
-          {stats.map((stat, i) => (
-            <div key={i} className="text-center md:text-left space-y-1">
-              <div className="text-4xl font-black text-slate-900 dark:text-white">{stat.val}</div>
-              <div className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">{stat.label}</div>
-            </div>
-          ))}
+        
 
-      </motion.div>
-    </div>
+
+      </div>
     </section>
   );
 }

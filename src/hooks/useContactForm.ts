@@ -1,40 +1,46 @@
-import { useState, useRef } from 'react';
-import ReCAPTCHA from "react-google-recaptcha";
+import { useState, useRef, FormEvent } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
+
+interface FormData {
+  name: string;
+  email: string;
+  message: string;
+  service: string;
+}
 
 export const useContactForm = () => {
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
-  const [formData, setFormData] = useState({ name: '', email: '', service: '', message: '' });
-  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
+  const [formData, setFormData] = useState<FormData>({ name: '', email: '', message: '', service: '' });
   const [loader, setLoader] = useState(false);
   const [showThanks, setShowThanks] = useState(false);
+  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!captchaValue || !formData.service) return;
-    setLoader(true);
+    if (!captchaValue) return;
 
+    setLoader(true);
     try {
-      const response = await fetch('/api/send', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, captchaValue }),
       });
 
-      if (response.ok) {
+      if (res.ok) {
         setShowThanks(true);
-        setFormData({ name: '', email: '', service: '', message: '' });
+        setFormData({ name: '', email: '', message: '', service: '' });
         recaptchaRef.current?.reset();
-        setCaptchaValue(null);
       } else {
-        const result = await response.json();
-        throw new Error(result.error || "Gagal mengirim.");
+        const errorData = await res.json();
+        alert(errorData.error || 'Terjadi kesalahan');
       }
-    } catch (error: any) {
-      alert(error.message);
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoader(false);
     }
   };
 
-  return { formData, setFormData, captchaValue, setCaptchaValue, loader, showThanks, setShowThanks, handleSubmit, recaptchaRef };
+  return { formData, setFormData, loader, handleSubmit, captchaValue, setCaptchaValue, recaptchaRef, showThanks, setShowThanks };
 };

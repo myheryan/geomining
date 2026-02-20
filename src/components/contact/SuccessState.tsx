@@ -19,7 +19,7 @@ export const SuccessState = ({ onReset }: SuccessStateProps) => (
     <div className="space-y-3">
       <h3 className="text-4xl font-bold tracking-tighter text-slate-900">Message Received.</h3>
       <p className="text-slate-500 max-w-xs mx-auto text-lg">
-        We'll review your details and get back to you within 24 hours.
+        We will review your details and get back to you within 24 hours.
       </p>
     </div>
     <button 

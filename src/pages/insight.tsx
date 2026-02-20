@@ -38,19 +38,26 @@ export default function InsightPage({ posts = [] }: InsightPageProps) {
     const titleMatch = (post.title || "").toLowerCase().includes(query);
     const descMatch = (post.description || "").toLowerCase().includes(query);
     const contentMatch = (post.content || "").toLowerCase().includes(query);
-    return isCategoryMatch && (titleMatch || descMatch || contentMatch);
+    const tagsMatch = post.tags?.some(tag => tag.toLowerCase().includes(query));
+    
+    return isCategoryMatch && (titleMatch || descMatch || contentMatch || tagsMatch);
   });
 
   return (
     <Layout>
       <HeadMeta templateTitle="Insight" description="Explore technical insights." />
 
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-sky-500/10 blur-[120px]" />
-        <div className="absolute bottom-[20%] right-[-10%] w-[400px] h-[400px] rounded-full bg-indigo-500/10 blur-[100px]" />
-      </div>
-
       <section className="fixed-content mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+
+        {/* Background Grid */}
+        <div className="absolute inset-0 pointer-events-none -z-20">
+          <div className="absolute inset-0 h-full w-full dark:opacity-[0.2]
+            bg-[linear-gradient(to_right,#3b82f61a_1px,transparent_1px),linear-gradient(to_bottom,#3b82f61a_1px,transparent_1px)] 
+            dark:bg-[linear-gradient(to_right,#0289ffd0_1px,transparent_1px),linear-gradient(to_bottom,#0289ffd0_1px,transparent_1px)]
+            bg-[size:80px_80px] 
+            ">
+          </div>
+        </div>
         
         <div className="mb-10 text-center md:text-left">
           <h1 className="text-4xl md:text-6xl font-light tracking-tight text-slate-900 dark:text-white mb-4">
@@ -105,12 +112,7 @@ export default function InsightPage({ posts = [] }: InsightPageProps) {
           </div>
         </div>
 
-        {/* --- GRID RESPONSIVE --- 
-            Mobile (<640px): 1 kolom
-            Tablet Kecil (sm >640px): 2 kolom
-            Tablet/Laptop Kecil (md >768px): 3 kolom  <-- PERUBAHAN DISINI
-            Desktop Besar (lg >1024px): 4 kolom      <-- PERUBAHAN DISINI
-        */}
+        {/* --- GRID RESPONSIVE --- */}
         <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 min-h-[50vh]">
           <AnimatePresence mode='popLayout'>
             {filteredPosts.map((post, i) => {
@@ -137,11 +139,35 @@ export default function InsightPage({ posts = [] }: InsightPageProps) {
                             <span className="text-slate-400 text-[10px] font-medium">No Image</span>
                           </div>
                         )}
-                        <div className="absolute top-3 left-3">
+                        
+                        {/* Gradasi bawah agar tags selalu terbaca */}
+                        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
+
+                        {/* Kategori (Kiri Atas) */}
+                        <div className="absolute top-3 left-3 z-10">
                           <span className="px-2 py-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded text-[9px] font-black uppercase tracking-widest text-slate-900 dark:text-white shadow-sm border border-white/20">
                             {post.category}
                           </span>
                         </div>
+
+                        {/* --- TAGS DIPINDAHKAN KE SINI (Kiri Bawah Gambar) --- */}
+                        {post.tags && post.tags.length > 0 && (
+                          <div className="absolute bottom-3 left-3 right-3 flex items-center flex-wrap gap-1.5 z-10">
+                            {post.tags.slice(0, 3).map((tag, index) => (
+                              <span 
+                                key={index} 
+                                className="px-2 py-1 bg-black/40 backdrop-blur-md text-white/95 text-[8px] font-bold uppercase tracking-wider rounded border border-white/10 shadow-sm"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                            {post.tags.length > 3 && (
+                              <span className="px-1.5 py-1 bg-black/40 backdrop-blur-md text-white/95 text-[8px] font-bold rounded border border-white/10 shadow-sm">
+                                +{post.tags.length - 3}
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
                       
                       <div className="flex-1 p-5 flex flex-col">
@@ -161,15 +187,9 @@ export default function InsightPage({ posts = [] }: InsightPageProps) {
                           {post.title}
                         </h3>
                         
-                        <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed line-clamp-3 mb-4 flex-grow">
+                        <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed line-clamp-3 flex-grow">
                           {post.description}
                         </p>
-                        
-                      {/*  <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800/50">
-                          <div className="flex items-center gap-1 text-[10px] font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors uppercase tracking-wider">
-                            Read <ChevronRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
-                          </div>
-                        </div>*/}
                       </div>
                     </article>
                   </Link>

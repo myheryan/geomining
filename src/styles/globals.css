@@ -241,3 +241,22 @@ h1 {
 }
 
 .fixed-content {padding-top: 6em;}
+
+    @keyframes gridFlow {
+      0% { mask-position: -50% -50%; }
+      100% { mask-position: 150% 150%; }
+    }
+
+
+                 @keyframes scan-dots {
+      0% { mask-position: 0 -200px; }
+      100% { mask-position: 0 120%; }
+
+    }
+    @keyframes scanline {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(1000%); }
+    }
+    .animate-scanline {
+      animation: scanline 8s linear infinite;
+    }

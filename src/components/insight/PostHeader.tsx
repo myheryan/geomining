@@ -52,7 +52,7 @@ export const PostHeader = ({
   const upDate = formatDate(lastUpdated);
 
   return (
-    <header className="relative py-8 md:py-10 max-w-4xl mx-auto">
+    <header className="relative py-8 md:py-10 mx-auto">
       
       {/* Animasi Masuk Halus */}
       <motion.div 
@@ -66,12 +66,6 @@ export const PostHeader = ({
         <div className="flex flex-wrap items-center gap-4">
           {category && <CategoryBadge>{category}</CategoryBadge>}
           
-          {pubDate && (
-            <div className="flex items-center gap-2 text-xs font-medium text-slate-400 dark:text-slate-500 pl-4 border-l border-slate-200 dark:border-slate-800">
-              <Calendar size={12} className="text-sky-500" />
-              <time className="uppercase tracking-wide text-[10px]">{pubDate}</time>
-            </div>
-          )}
         </div>
 
         {/* 2. The Title (Besar & Elegan) */}
@@ -81,7 +75,12 @@ export const PostHeader = ({
 
         {/* 3. Meta Info Bar (Reading Time & Updates) */}
         <div className="flex flex-wrap items-center gap-6 text-sm text-slate-500 dark:text-slate-400 w-full pb-6 border-b border-slate-100 dark:border-slate-800/60">
-          
+          {pubDate && (
+            <div className="flex items-center gap-2 text-xs font-medium text-slate-400 dark:text-slate-500 pl-4 border-l border-slate-200 dark:border-slate-800">
+              <Calendar size={12} className="text-sky-500" />
+              <time className="ext-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">{pubDate}</time>
+            </div>
+          )}
           {readingTime && (
             <div className="flex items-center gap-2">
               <Clock size={16} className="text-slate-400" />

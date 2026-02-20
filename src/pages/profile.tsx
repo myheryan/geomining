@@ -1,175 +1,163 @@
 'use client';
 
-import clsx from "clsx";
 import { motion } from "framer-motion";
 import { 
-  MapPin, Mail, Github, Linkedin, Instagram, 
-  Terminal, Zap, Briefcase, 
-  GraduationCap, ChevronRight, Paperclip, Bookmark
+  Mail, Linkedin, 
+  Terminal, Zap, ArrowRight,
+  ShieldCheck, HardHat, Activity
 } from "lucide-react";
 import Image from "next/image";
 
 import Layout from "@/components/layout";
 import HeadMeta from "@/components/headMeta";
-import SkillBase from "@/components/profile/skillAbillity";
-import ProfileImage from "@/../public/img/profile.png";
+import ProfileImage from "@/../public/img/mentor2.png"; // Pastikan path benar
 
-// --- DATA CHRONICLES (Tetap Sama) ---
+// --- DATA CHRONICLES ---
 const experience = [
   {
-    role: "Full-Stack Developer",
-    company: "Freelance / Self-Employed",
-    period: "2022 — Present",
-    desc: "Membangun solusi web kustom untuk klien internasional dengan fokus pada skalabilitas."
+    role: "Senior Mining Technology Engineer",
+    company: "Major Mining Corporation",
+    period: "2020 — Present",
+    desc: "Memimpin integrasi digital pada operasional tambang terbuka. Spesialisasi dalam implementasi Fleet Management System (FMS) dan otomatisasi data sensor untuk efisiensi produksi."
   },
   {
-    role: "Backend Engineer",
-    company: "Tech Solutions ID",
-    period: "2020 — 2022",
-    desc: "Optimasi database dan integrasi API untuk platform e-commerce skala menengah."
+    role: "Geotechnical System Specialist",
+    company: "Engineering Consultant Group",
+    period: "2017 — 2020",
+    desc: "Fokus pada analisis stabilitas lereng menggunakan instrumen geoteknik tingkat lanjut dan pemodelan numerik untuk mitigasi risiko longsor."
   }
+];
+
+const stats = [
+  { label: "Experience", val: "8+ Years" },
+  { label: "Safety Record", val: "100%" },
+  { label: "Cost Savings", val: "25%" },
+  { label: "Tech Projects", val: "12+" }
 ];
 
 export default function AboutPage() {
   return (
     <Layout>
-      <HeadMeta templateTitle="About Me" description="Heryanto's Digital Memoir" />
+      <HeadMeta templateTitle="Expertise Profile" description="Heryanto - Mining Technology Expert" />
 
-      {/* --- BACKGROUND LAYER: Kertas Bertekstur --- */}
-      <div className="fixed inset-0 -z-10 bg-[#f4f1ea] dark:bg-[#0a0c10] transition-colors duration-700">
-        <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]" />
-        {/* Dekorasi Garis Buku Tulis di Sisi Kiri */}
-        <div className="absolute left-10 inset-y-0 w-px bg-red-200/40 hidden lg:block" />
-        <div className="absolute left-12 inset-y-0 w-px bg-red-200/40 hidden lg:block" />
-      </div>
-
-      <main className="mx-auto max-w-7xl px-6 py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-          
-          {/* --- LEFT SIDE: THE VINTAGE POLAROID --- */}
-          <div className="lg:col-span-5 flex flex-col items-center lg:sticky lg:top-32">
-            <motion.div 
-              className="relative"
+      <main className="mx-auto max-w-6xl px-6 py-24 md:py-32">
+        
+        {/* --- HERO SECTION --- */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center mb-32">
+          <div className="lg:col-span-7 space-y-8">
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+              className="space-y-4"
             >
-              {/* Masking Tape (Selotip Transparan) */}
-              <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-28 h-10 bg-sky-500/10 backdrop-blur-sm border border-sky-500/5 rotate-[-2deg] z-20 shadow-sm" />
-
-              {/* POLAROID FRAME */}
-              <div className="relative p-4 pb-16 bg-white shadow-[10px_10px_0px_rgba(0,0,0,0.03)] rotate-[-2deg] border border-slate-100">
-                <div className="relative w-72 h-72 md:w-80 md:h-80 overflow-hidden bg-slate-100">
-                  <Image 
-                    src={ProfileImage} 
-                    alt="Heryanto" 
-                    fill 
-                    className="object-cover contrast-[1.05] sepia-[0.1]" 
-                  />
-                  {/* Efek Cahaya Bocor (Light Leak) ala Scrapbook */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/10 to-transparent pointer-events-none" />
-                </div>
-                
-                {/* Caption Tulis Tangan */}
-                <div className="absolute bottom-4 left-0 right-0 text-center">
-                  <p className="text-slate-700 text-3xl font-handwriting italic" style={{ fontFamily: "'Patrick Hand', cursive" }}>
-                    Me, 2026.
-                  </p>
-                </div>
+              <div className="flex items-center gap-2 text-sky-600 dark:text-sky-500 font-bold tracking-[0.3em] uppercase text-[10px]">
+                <HardHat size={14} /> Mining Technology Expert
               </div>
-
-              {/* Sticky Note Kecil */}
-              <motion.div 
-                className="absolute -right-12 top-10 w-24 h-24 bg-yellow-100 dark:bg-amber-900/30 p-3 shadow-md rotate-12 flex items-center justify-center text-center border-l-4 border-yellow-400"
-                style={{ fontFamily: "'Patrick Hand', cursive" }}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 1 }}
-              >
-                <span className="text-yellow-700 dark:text-yellow-200 text-sm leading-tight">Keep <br/> Creating!</span>
-              </motion.div>
+              <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-slate-900 dark:text-white leading-[0.85]">
+                Engineering <br /> The Future.
+              </h1>
+              <p className="text-xl text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed">
+                Heryanto menggabungkan ilmu geoteknik presisi dengan inovasi teknologi untuk memastikan operasional tambang yang aman, efisien, dan berkelanjutan.
+              </p>
             </motion.div>
 
-            {/* Quick Info: Bergaya Memo Klip */}
-            <div className="mt-20 w-full max-w-xs relative rotate-1">
-              <div className="absolute -top-6 left-4 z-20 text-slate-400 -rotate-12">
-                <Paperclip size={24} />
-              </div>
-              <div className="p-6 bg-white dark:bg-slate-900 border-2 border-dashed border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-                <div className="flex items-center gap-4 text-slate-600 dark:text-slate-400">
-                  <MapPin size={16} className="text-red-400" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Ciamis, West Java</span>
-                </div>
-                <div className="flex items-center gap-4 text-slate-600 dark:text-slate-400">
-                  <Mail size={16} className="text-sky-400" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest leading-none">hello@heryan.me</span>
-                </div>
+            <div className="flex flex-wrap gap-6 pt-4">
+              <button className="px-10 py-4 bg-slate-900 dark:bg-orange-600 text-white font-bold text-xs uppercase tracking-widest rounded-none shadow-xl hover:bg-orange-500 transition-all active:scale-95">
+                Technical Resume
+              </button>
+              <div className="flex items-center gap-6 border-l border-slate-200 dark:border-slate-800 pl-8">
+                <Linkedin size={20} className="text-slate-400 hover:text-blue-600 cursor-pointer transition-colors" />
+                <Mail size={20} className="text-slate-400 hover:text-sky-600 cursor-pointer transition-colors" />
               </div>
             </div>
           </div>
 
-          {/* --- RIGHT SIDE: THE JOURNAL --- */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-5 relative">
             <motion.div 
-              className="relative bg-[#fdfcf8] dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 md:p-16 shadow-[15px_15px_0px_rgba(0,0,0,0.04)] rounded-sm"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
+              className="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-slate-900 rounded-3xl border-[12px] border-white dark:border-slate-800 shadow-2xl"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
             >
-              {/* Bookmark Decor */}
-              <div className="absolute top-0 right-10 w-8 h-12 bg-red-400 dark:bg-red-600 flex items-end justify-center pb-2 text-white">
-                <Bookmark size={14} fill="white" />
-              </div>
-
-              <header className="mb-16">
-                <h1 className="text-4xl font-serif italic text-slate-900 dark:text-white border-b-2 border-slate-100 dark:border-slate-800 pb-4 inline-block">
-                  Career Chronicles
-                </h1>
-              </header>
-
-              <div className="space-y-20">
-                {/* 1. EXPERIENCE */}
-                <section className="relative">
-                  <div className="flex items-center gap-4 mb-10">
-                    <h3 className="text-xs font-black uppercase tracking-[0.3em] text-sky-500 bg-sky-50 px-2 py-1">Timeline.log</h3>
-                  </div>
-
-                  <div className="space-y-12">
-                    {experience.map((item, i) => (
-                      <div key={i} className="group relative pl-8 border-l border-slate-200 dark:border-slate-800">
-                        <div className="absolute -left-[5px] top-1.5 h-2 w-2 rounded-full bg-slate-300 dark:bg-slate-700 group-hover:bg-sky-500 transition-colors" />
-                        <span className="text-[10px] font-mono text-slate-400 uppercase">{item.period}</span>
-                        <h4 className="text-xl font-bold text-slate-900 dark:text-white mt-1">{item.role}</h4>
-                        <p className="text-sky-600 dark:text-sky-400 text-xs font-bold mb-3 tracking-wide">{item.company}</p>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed italic">"{item.desc}"</p>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-
-                {/* 2. SKILLS - Matrix Gaya Kartu Indeks */}
-                <section>
-                   <h3 className="text-xs font-black uppercase tracking-[0.3em] text-emerald-500 mb-8">Technical_Inventory</h3>
-                   <div className="bg-slate-50/50 dark:bg-slate-800/50 p-6 rounded-sm border border-slate-100 dark:border-slate-800 border-dashed">
-                      <SkillBase />
-                   </div>
-                </section>
-              </div>
-
-              {/* FOOTER: Bergaya Lembaran Kontak Terpisah */}
-              <footer className="mt-20 pt-12 border-t border-dashed border-slate-200 dark:border-slate-800 flex flex-wrap justify-between items-center gap-8">
-                <div className="flex gap-3">
-                   {[Github, Linkedin, Instagram].map((Icon, i) => (
-                    <a key={i} href="#" className="w-10 h-10 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-500 hover:text-sky-500 hover:-translate-y-1 transition-all shadow-sm">
-                      <Icon size={16} />
-                    </a>
-                  ))}
-                </div>
-                
-                <button className="px-8 py-3 bg-slate-900 dark:bg-sky-600 text-white font-bold text-[10px] uppercase tracking-[0.2em] shadow-[5px_5px_0px_#0ea5e9] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
-                  Contact.init()
-                </button>
-              </footer>
+              <Image 
+                src={ProfileImage} 
+                alt="Heryanto Mining Engineer" 
+                fill 
+                className="object-cover contrast-[1.1] transition-all duration-1000" 
+              />
             </motion.div>
+          </div>
+        </section>
+
+        {/* --- STATS SECTION --- */}
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-8 py-16 border-y border-slate-100 dark:border-slate-800 mb-32">
+          {stats.map((stat, i) => (
+            <div key={i} className="text-center md:text-left space-y-1">
+              <div className="text-4xl font-black text-slate-900 dark:text-white">{stat.val}</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">{stat.label}</div>
+            </div>
+          ))}
+        </section>
+
+        {/* --- CONTENT GRID --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+          
+          {/* LEFT: EXPERTISE & TOOLS */}
+          <div className="lg:col-span-4 space-y-16">
+            <div className="space-y-8">
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-sky-500">Core Expertise</h3>
+              <div className="space-y-4">
+                {[
+                  { label: "Slope Stability Analysis", icon: Activity },
+                  { label: "IoT Sensor Integration", icon: Zap },
+                  { label: "Safety Management", icon: ShieldCheck },
+                  { label: "Mining Data Analytics", icon: Terminal },
+                ].map((skill, i) => (
+                  <div key={i} className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 group hover:border-orange-500/50 transition-all">
+                    <skill.icon size={18} className="text-sky-500" />
+                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-tight">{skill.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-8 bg-slate-900 text-white rounded-2xl space-y-4">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-sky-500">Systems Mastery</h4>
+              <p className="text-xs text-slate-400 leading-relaxed">Expert proficiency in Slide2, RS2, Deswik, and Python for geotechnical data modeling.</p>
+            </div>
+          </div>
+
+          {/* RIGHT: CAREER LOGS */}
+          <div className="lg:col-span-8">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-12">Professional Experience</h3>
+            <div className="space-y-20">
+              {experience.map((item, i) => (
+                <div key={i} className="group relative">
+                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-4">
+                    <div className="space-y-1">
+                      <h4 className="text-3xl font-bold text-slate-900 dark:text-white">{item.role}</h4>
+                      <div className="text-sm font-black text-sky-600 uppercase tracking-widest">{item.company}</div>
+                    </div>
+                    <div className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-4 py-2 self-start border border-slate-200 dark:border-slate-700">
+                      {item.period}
+                    </div>
+                  </div>
+                  <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed max-w-2xl italic">
+                    `{item.desc}``
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* CALL TO ACTION */}
+            <div className="mt-32 p-12 bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex flex-col md:flex-row items-center justify-between gap-10">
+              <div className="space-y-2">
+                <h4 className="text-3xl font-black tracking-tighter leading-none">Ready to collaborate?</h4>
+                <p className="text-sm opacity-60">Professional Consultation & Project Inquiry.</p>
+              </div>
+              <button className="group flex items-center gap-4 bg-orange-600 text-white px-10 py-5 font-bold text-xs uppercase tracking-[0.2em] transition-all hover:bg-orange-500 shadow-xl shadow-orange-600/20">
+                Initialize Contact <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
+              </button>
+            </div>
           </div>
         </div>
       </main>

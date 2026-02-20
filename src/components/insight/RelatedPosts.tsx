@@ -28,7 +28,7 @@ export default function RelatedPosts({ posts }: RelatedPostsProps) {
   const displayPosts = posts.slice(0, 3);
 
   return (
-    <section className="mt-20 md:mt-32 px-4 max-w-[1200px] mx-auto mb-20">
+    <section className="mt-3 px-4 max-w-[1200px] mx-auto mb-20">
       
       {/* --- HEADER SECTION --- */}
       <div className="flex items-end justify-between mb-10 border-b border-slate-100 dark:border-slate-800/60 pb-6">
@@ -50,7 +50,7 @@ export default function RelatedPosts({ posts }: RelatedPostsProps) {
       </div>
 
       {/* --- GRID CARD --- */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8">
         {displayPosts.map((post) => {
           // Safety Date Logic
           const dateObj = post.publishedAt ? new Date(post.publishedAt) : null;

@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 
 interface ScrollSpyOptions {
@@ -6,8 +8,7 @@ interface ScrollSpyOptions {
 }
 
 /**
- * Enterprise ScrollSpy Hook with Preload Guard
- * Menggunakan requestAnimationFrame untuk memastikan DOM MDX sudah siap.
+ * Enterprise ScrollSpy Hook with DOM Ready Retry Mechanism
  */
 export default function useScrollSpy(
   selectors: string = "h2, h3",
@@ -17,7 +18,6 @@ export default function useScrollSpy(
   const [activeSection, setActiveSection] = React.useState<string | null>(null);
   const { offset = 100, root = null } = options;
 
-  // Ref untuk menyimpan status visibilitas elemen
   const visibleElements = React.useRef<Record<string, boolean>>({});
 
   const handleIntersect = React.useCallback((entries: IntersectionObserverEntry[]) => {
@@ -33,36 +33,50 @@ export default function useScrollSpy(
     );
 
     if (activeIds.length > 0) {
-      setActiveSection(activeIds[0]);
+      // Mengambil elemen terakhir yang intersect agar lebih presisi saat scroll ke bawah
+      setActiveSection(activeIds[activeIds.length - 1]);
     }
   }, []);
 
   React.useEffect(() => {
-    // 1. Reset state saat 'code' (konten) berubah
+    // 1. Reset state saat berpindah halaman
     visibleElements.current = {}; 
     setActiveSection(null);
 
     let observer: IntersectionObserver | null = null;
+    let timeoutId: NodeJS.Timeout;
 
-    // PERBAIKAN: Gunakan 'const' untuk rafId karena hanya di-assign sekali dalam effect ini
-    const rafId = requestAnimationFrame(() => {
-      const elements = document.querySelectorAll(selectors);
+    // 2. Fungsi inisialisasi dengan sistem "Retry"
+    const initObserver = (retries = 5) => {
+      const elements = Array.from(document.querySelectorAll(selectors));
       
-      if (elements.length === 0) return;
+      // Jika elemen belum ada di DOM (karena MDX masih proses render)
+      if (elements.length === 0) {
+        if (retries > 0) {
+          // Coba cari lagi setelah 100ms
+          timeoutId = setTimeout(() => initObserver(retries - 1), 100);
+        }
+        return;
+      }
 
+      // Jika elemen sudah ada, pasang Observer
       observer = new IntersectionObserver(handleIntersect, {
         root,
-        rootMargin: `-${offset}px 0px -80% 0px`,
+        // Konfigurasi margin agar hanya menyorot elemen di sepertiga atas layar
+        rootMargin: `-${offset}px 0px -60% 0px`, 
         threshold: 0,
       });
 
       elements.forEach((el) => observer?.observe(el));
-    });
+    };
 
-    // 3. Cleanup
+    // Mulai inisialisasi dengan jeda awal 50ms untuk memberi ruang Next.js meroute
+    timeoutId = setTimeout(() => initObserver(), 50);
+
+    // 3. Cleanup function untuk mencegah memory leak
     return () => {
       if (observer) observer.disconnect();
-      cancelAnimationFrame(rafId);
+      clearTimeout(timeoutId);
     };
   }, [selectors, offset, code, root, handleIntersect]);
 

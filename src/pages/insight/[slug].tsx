@@ -1,5 +1,5 @@
- 
 import * as React from "react";
+import Image from "next/image";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { getMDXComponent } from "mdx-bundler/client";
 import { motion, useScroll, useSpring } from "framer-motion";
@@ -35,7 +35,6 @@ interface PostFrontmatter {
   readingTime?: { text: string };
 }
 
-// Interface untuk Related Post agar tidak 'any'
 interface RelatedPost {
   slug: string;
   title: string;
@@ -59,9 +58,8 @@ interface ContextParams extends ParsedUrlQuery {
   slug: string;
 }
 
-// --- HELPER COMPONENT (Fix: react-hooks/static-components) ---
+// --- HELPER COMPONENT ---
 const MDXRenderer = ({ code }: { code: string }) => {
-  // Gunakan useState + useEffect alih-alih useMemo agar lolos linter
   const [Component, setComponent] = React.useState<React.ComponentType<{
     components: typeof mdxComponents;
   }> | null>(null);
@@ -95,18 +93,26 @@ export default function SingleInsightPage({
     restDelta: 0.001
   });
 
-  React.useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [slug]);
 
-  const activeSection = useScrollSpy("h2, h3", code);
+
+const activeSection = useScrollSpy("h2, .mdx h3", code);  
+  if (!frontmatter) {
+    return (
+      <Layout key="error-layout">
+         <div className="flex h-screen items-center justify-center text-slate-500">
+            Mempersiapkan data artikel... (Atau frontmatter tidak ditemukan di file MDX ini)
+         </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout key={slug}>
+      {/* 2. OPTIONAL CHAINING & FALLBACK: Pastikan property dibaca dengan aman */}
       <HeadMeta 
-        templateTitle={frontmatter.title} 
-        description={frontmatter.description} 
-        ogImage={frontmatter.image} 
+        templateTitle={frontmatter?.title || "Artikel Tanpa Judul"} 
+        description={frontmatter?.description || ""} 
+        ogImage={frontmatter?.image} 
       />
 
       <motion.div 
@@ -114,57 +120,79 @@ export default function SingleInsightPage({
         style={{ scaleX }}
       />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-          
-          <main className="lg:col-span-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <PostHeader 
-                {...frontmatter}
-                readingTime={frontmatter.readingTime?.text}
-              />
-            </motion.div>
-            
-            <article className="
-              mt-10
-              prose prose-slate dark:prose-invert 
-              max-w-none 
-              lg:prose-xl
-              prose-img:rounded-3xl 
-              prose-figure:my-12
-              prose-headings:scroll-mt-32
-              prose-p:text-slate-600 dark:prose-p:text-slate-300
-              prose-strong:text-slate-900 dark:prose-strong:text-white
-              mdx
-            ">
-              <MDXRenderer code={code} />
-            </article>
+      <section className="relative w-full">
+        <div>
+          <figure className="pointer-events-none absolute left-0 top-0 z-[-1] h-[16rem] w-full overflow-hidden">
+            {frontmatter?.image && (
+               <Image fill
+                 src={frontmatter.image} 
+                 alt={frontmatter?.title || "Banner image"} // <-- Amankan bagian ini
+                 className="w-full h-full object-cover opacity-70 md:-translate-y-1/4"
+               />
+            )}
+          </figure>
+          <div className="absolute left-0 top-0 z-[-1] h-[16rem] w-full bg-gradient-to-b from-sky-400/20 to-white dark:to-neutral-950" />
+        </div>
 
-            <div className="mt-24 pt-12 border-t border-slate-100 dark:border-slate-800">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8  pt-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <PostHeader 
+              {...frontmatter}
+              readingTime={frontmatter?.readingTime?.text}
+            />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 3. MAIN CONTENT & SIDEBAR GRID */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
+        
+        {/* Kolom Kiri: Artikel MDX */}
+        <main className="w-full">
+          <article className="
+            mdx prose mx-auto mt-4 w-full transition-colors 
+            prose-slate dark:prose-invert max-w-none 
+            prose-img:rounded-3xl prose-figure:my-12
+            prose-headings:scroll-mt-32
+            prose-p:text-slate-600 dark:prose-p:text-slate-300
+            prose-strong:text-slate-900 dark:prose-strong:text-white
+          ">
+            <MDXRenderer code={code} />
+          </article>
+
+          {/* Area Interaksi & Related Posts di bawah artikel */}
+          <div className="mt-24">
+             {/* Jika kamu ingin menambahkan tombol 'Like/Kudos' seperti di HTML referensi, taruh di sini */}
+             <div className="border-t border-slate-200 dark:border-neutral-800">
                <RelatedPosts posts={relatedPosts} />
-            </div>
-          </main>
-          
-          <aside className="hidden lg:block lg:col-span-4">
-            <div className="sticky top-32 pl-10">
+             </div>
+          </div>
+        </main>
+        
+        {/* Kolom Kanan: Sticky Sidebar (TOC) */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-20">
+            <div className="max-h-[calc(100vh-9rem-113px)] overflow-auto  hidden lg:block">
               <TableOfContents 
                 toc={toc} 
                 minLevel={minLevel} 
                 activeSection={activeSection} 
               />
-              
-              <div className="mt-12 p-8 rounded-3xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-900/50 dark:to-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm">
-                <h4 className="text-sm font-bold mb-2">Share this article</h4>
-                <p className="text-xs text-slate-500 mb-4">Jika artikel ini membantumu, silakan bagikan ke rekan developer lainnya!</p>
-              </div>
             </div>
-          </aside>
+            
+            {/* Share Widget Option (Sama seperti referensi HTML) */}
+            <div className="mt-8 p-6 rounded-xl border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-900/50">
+              <h4 className="text-sm font-bold mb-2">Share this article</h4>
+              <p className="text-xs text-slate-500 mb-4">Jika artikel ini membantumu, silakan bagikan ke rekan developer lainnya!</p>
+              {/* Tempatkan tombol share-mu di sini */}
+            </div>
+          </div>
+        </aside>
 
-        </div>
-      </div>
+      </section>
 
       <MobileTOC toc={toc} activeSection={activeSection} minLevel={minLevel} />
     </Layout>

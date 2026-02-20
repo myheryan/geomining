@@ -58,7 +58,7 @@ export default function TableOfContents({
       <div className="px-4 space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500">
-            On This Page
+            Table Of Contents
           </h3>
           <span className="text-[10px] font-mono font-bold text-sky-500 bg-sky-500/10 px-2 py-0.5 rounded">
             {Math.round(progress)}%

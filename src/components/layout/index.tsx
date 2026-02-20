@@ -3,11 +3,12 @@ import * as React from "react";
 import Header  from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
-import { PreloadProvider } from "@/context/PreloadContext";
+import { PreloadProvider } from "@/components/PreloadProvider";
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
+      
       <PreloadProvider>{children}</PreloadProvider>
       <Footer />
     </>

@@ -19,7 +19,7 @@ const mentors = [
     initials: "MK",
     education: "Institut Teknologi Bandung",
     experience: "Certified Geotechnical Professional",
-    image: "/img/mentor3.png"
+    image: "/img/mentor2.png"
   },
   {
     name: "Faidh Muhlis, S.T., CP",
@@ -27,43 +27,40 @@ const mentors = [
     initials: "FM",
     education: "Universitas Trisakti",
     experience: "Expert Resources Modeler",
-    image: "/img/mentor2.png"
+    image: "/img/mentor3.png"
   },
 ];
       
 export default function TripleHorizontalRow() {
   return (
-    <section className="relative bg-white py-24 lg:py-32 overflow-hidden">
-      
-      {/* --- PROFESSIONAL TECHNICAL BACKGROUND LAYER --- */}
+    <section className="relative min-h-screen bg-white dark:bg-[#020617] transition-colors duration-500 py-24 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* 1. Fine Technical Grid */}
-        <div 
-          className="absolute inset-0 opacity-[0.4]" 
-          style={{ 
-            backgroundImage: `
-              linear-gradient(#e2e8f0 1.5px, transparent 1.5px), 
-              linear-gradient(90deg, #e2e8f0 1.5px, transparent 1.5px)
-            `,
-            backgroundSize: '60px 60px' 
-          }} 
-        />
-
-        {/* 2. Sub-Grid (Titik-titik Presisi) */}
-        <div 
-          className="absolute inset-0 opacity-[0.2]" 
-          style={{ 
-            backgroundImage: 'radial-gradient(#94a3b8 1px, transparent 1px)', 
-            backgroundSize: '20px 20px' 
-          }} 
-        />
-
-        {/* 3. Ambient Professional Glows */}
-        {/* Biru Lembut di sisi kiri atas */}
-        <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] bg-blue-50 rounded-full blur-[120px] opacity-60" />
-        {/* Abu-abu hangat di sisi kanan bawah */}
-        <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-slate-100 rounded-full blur-[100px] opacity-50" />
+      {/* Light Mode Grid */}
+      <div className="absolute inset-0 opacity-[0.2] dark:opacity-0 transition-opacity duration-500" 
+      style={{ 
+      backgroundImage: 'linear-gradient( #c4c5c5bc 1px, transparent 1px), linear-gradient(90deg, #c4c5c5bc 1px, transparent 1px)', 
+      backgroundSize: '80px 80px' 
+      }}    
+      />
+      {/* Dark Mode Grid */}
+      <div 
+      className="absolute inset-0 opacity-0 dark:opacity-[0.2] transition-opacity duration-500" 
+      style={{ 
+      backgroundImage: 'linear-gradient(#0289ffd0 1px, transparent 1px), linear-gradient(90deg, #0289ffd0 1px, transparent 1px)', 
+      backgroundSize: '80px 80px' 
+      }} 
+      />
+      <div className="absolute top-0 left-1 w-[800px] h-[320px] blur-[120px] bg-gray-300 dark:bg-sky-500/20 blur-[120px] opacity-0 dark:opacity-100" />
+      {/* 2. Sub-Grid Titik-titik Presisi (Adaptif Light/Dark) */}
+      <div className="absolute inset-0 text-[#dfe9fc]/50 dark:text-sky-500/20 transition-colors duration-500" 
+      style={{ 
+      backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', 
+      backgroundSize: '20px 20px' 
+      }} 
+      />
       </div>
+
+
 
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
         
@@ -74,15 +71,15 @@ export default function TripleHorizontalRow() {
             whileInView={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2 mb-4"
           >
-            <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-            <span className="text-[11px] font-bold text-blue-600 tracking-wider">Technical Faculty</span>
+            <div className="w-2 h-2 rounded-full bg-blue-600 dark:bg-sky-400 animate-pulse" />
+            <span className="font-bold text-blue-600 dark:text-sky-400 tracking-wider">Get to know</span>
           </motion.div>
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-slate-950">
-              Expertise <span className="text-slate-400 italic font-serif font-light">Directory.</span>
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-sky-500 dark:text-white transition-colors duration-500">
+              Our Mining <span className="text-slate-400 dark:text-slate-500 italic font-serif font-light">Experts.</span>
             </h2>
-            <p className="text-slate-500 text-sm max-w-xs border-l-2 border-blue-600 pl-4 py-1">
+            <p className="text-slate-500 dark:text-slate-400 text-sm max-w-xs border-l-2 border-blue-600 dark:border-sky-500 pl-4 py-1 transition-colors duration-500">
               Dipandu oleh praktisi senior untuk menjamin integritas data dan keamanan operasional.
             </p>
           </div>
@@ -97,13 +94,13 @@ export default function TripleHorizontalRow() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.7 }}
-              /* Glass Card Style */
-              className="group relative bg-slate-200/50 backdrop-blur-md border border-slate-200/60 rounded-[2.5rem] overflow-hidden hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] hover:border-blue-400/50 transition-all duration-500"
+              /* Glass Card Style (Adaptif Light/Dark) */
+              className="group relative bg-slate-200/50 dark:bg-slate-800/40 backdrop-blur-md border border-slate-200/60 dark:border-slate-700/50 rounded-[2.5rem] overflow-hidden hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_30px_60px_-15px_rgba(14,165,233,0.1)] hover:border-blue-400/50 dark:hover:border-sky-400/50 transition-all duration-500"
             >
               <div className="flex flex-row h-full min-h-[240px]">
                 
                 {/* --- PHOTO --- */}
-                <div className="w-[180px] lg:w-[180px] relative bg-slate-100 overflow-hidden shrink-0 border-r border-slate-100">
+                <div className="w-[180px] md:w-[180px] lg:w-[180px] relative bg-slate-100 dark:bg-slate-800/80 overflow-hidden shrink-0 border-r border-slate-100 dark:border-slate-700/50 transition-colors duration-500">
                    <Image 
                     src={mentor.image} 
                     alt={mentor.name} 
@@ -113,40 +110,33 @@ export default function TripleHorizontalRow() {
                 </div>
 
                 {/* --- CONTENT --- */}
-                <div className="flex-grow p-6 flex flex-col justify-between">
+                <div className="flex-grow p-5 lg:p-6 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-base lg:text-lg font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors mb-2">
+                    <h3 className="text-base lg:text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight group-hover:text-blue-600 dark:group-hover:text-sky-400 transition-colors duration-300 mb-2">
                       {mentor.name}
                     </h3>
-                    <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-4">
+                    <p className="text-[10px] font-bold text-blue-600 dark:text-sky-500 uppercase tracking-widest mb-4 transition-colors duration-500">
                       {mentor.role}
                     </p>
 
-                    <div className="space-y-3 pt-4 border-t border-slate-100">
+                    <div className="space-y-3 pt-4 border-t border-slate-200/50 dark:border-slate-700/50 transition-colors duration-500">
                       <div className="flex items-start gap-2">
-                        <GraduationCap size={14} className="text-slate-400 shrink-0 mt-0.5" />
-                        <p className="text-[11px] text-slate-600 leading-tight">{mentor.education}</p>
+                        <GraduationCap size={14} className="text-slate-400 dark:text-slate-500 shrink-0 mt-0.5 transition-colors duration-500" />
+                        <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-tight transition-colors duration-500">{mentor.education}</p>
                       </div>
                       <div className="flex items-start gap-2">
-                        <Briefcase size={14} className="text-slate-400 shrink-0 mt-0.5" />
-                        <p className="text-[11px] text-slate-600 leading-tight font-medium">{mentor.experience}</p>
+                        <Briefcase size={14} className="text-slate-400 dark:text-slate-500 shrink-0 mt-0.5 transition-colors duration-500" />
+                        <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-tight font-medium transition-colors duration-500">{mentor.experience}</p>
                       </div>
                     </div>
                   </div>
                 </div>
+                
               </div>
             </motion.div>
           ))}
         </div>
       </div>
-
-      <style jsx global>{`
-        @keyframes shimmer {
-          100% {
-            left: 100%;
-          }
-        }
-      `}</style>
     </section>
   );
 }

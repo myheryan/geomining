@@ -1,46 +1,60 @@
-import { useState, useRef, FormEvent } from 'react';
-import ReCAPTCHA from 'react-google-recaptcha';
-
-interface FormData {
-  name: string;
-  email: string;
-  message: string;
-  service: string;
-}
+import { useState, useRef } from 'react';
+import ReCAPTCHA from "react-google-recaptcha";
 
 export const useContactForm = () => {
-  const [formData, setFormData] = useState<FormData>({ name: '', email: '', message: '', service: '' });
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const [formData, setFormData] = useState({ name: '', email: '', service: '', message: '' });
+  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
   const [loader, setLoader] = useState(false);
   const [showThanks, setShowThanks] = useState(false);
-  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!captchaValue) return;
+    console.log("Tombol diklik, memulai proses..."); // Debug log
+
+    if (loader) return;
+
+    if (!captchaValue || !formData.service) {
+      alert("Silakan isi semua field dan centang Captcha");
+      return;
+    }
 
     setLoader(true);
+
     try {
-      const res = await fetch('/api/contact', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, captchaValue }),
       });
 
-      if (res.ok) {
-        setShowThanks(true);
-        setFormData({ name: '', email: '', message: '', service: '' });
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Berhasil terkirim:", result);
+        setShowThanks(true); // Ini yang akan memicu tampilan "Terima Kasih"
+        // Reset Form
+        setFormData({ name: '', email: '', service: '', message: '' });
+        setCaptchaValue(null);
         recaptchaRef.current?.reset();
       } else {
-        const errorData = await res.json();
-        alert(errorData.error || 'Terjadi kesalahan');
+        console.error("Error dari API:", result.error);
+        alert(result.error || "Gagal mengirim pesan.");
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error("Koneksi Error:", error);
+      alert("Terjadi kesalahan koneksi ke server.");
     } finally {
-      setLoader(false);
+      setLoader(false); // Pastikan loader mati baik sukses maupun gagal
     }
   };
 
-  return { formData, setFormData, loader, handleSubmit, captchaValue, setCaptchaValue, recaptchaRef, showThanks, setShowThanks };
+  return { 
+    formData, setFormData, 
+    captchaValue, setCaptchaValue, 
+    loader, 
+    showThanks, setShowThanks, 
+    handleSubmit, 
+    recaptchaRef 
+  };
 };

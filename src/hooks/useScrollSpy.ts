@@ -63,7 +63,7 @@ export default function useScrollSpy(
       observer = new IntersectionObserver(handleIntersect, {
         root,
         // Konfigurasi margin agar hanya menyorot elemen di sepertiga atas layar
-        rootMargin: `-${offset}px 0px -60% 0px`, 
+        rootMargin: `-${offset}px 0px -70% 0px`, 
         threshold: 0,
       });
 

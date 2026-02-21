@@ -8,8 +8,9 @@ import {
   Mail, 
   MapPin,
   Building2,
-  ArrowUpRight
+  ArrowUpRight,
 } from 'lucide-react';
+import { WhatsappIcon } from "@/components/ui/icon-svg";
 
 export default function Footer() {
   return (
@@ -43,7 +44,7 @@ export default function Footer() {
               </h3>
               <div className="flex items-start gap-3.5 text-slate-400">
                 <div className="mt-1 p-1.5 rounded-lg bg-white/5 border border-white/10 shrink-0">
-                  <MapPin size={16} className="text-sky-400" />
+                  <MapPin size={24} className="text-sky-400" />
                 </div>
                 <p className="flex-1 leading-relaxed text-sm md:text-base">
                   Wirausaha Building - Lt.1 Unit.104 <br />
@@ -51,6 +52,25 @@ export default function Footer() {
                   Setiabudi, Jakarta Selatan
                 </p>
               </div>
+                <div className="flex items-center gap-3.5 text-slate-400">
+                <a 
+  href="https://wa.me/628133333073" 
+  target="_blank" 
+  rel="noopener noreferrer"
+  className="flex items-center gap-3.5 text-slate-400 hover:text-emerald-400 transition-colors duration-300 group"
+> <div className="mt-1 p-1.5 rounded-lg bg-white/5 border border-white/10 shrink-0 group-hover:border-emerald-400/50 transition-colors">
+    <WhatsappIcon className='text-emerald-400' />
+  </div>               <p className="flex-1 leading-relaxed text-sm md:text-base">
+                 +6281 3333 3073
+                </p></a>
+
+              </div>
+            </div>
+                        {/* Social Icons */}
+            <div className="flex items-center gap-3">
+              <SocialLink icon={<Linkedin size={18} />} href="https://www.linkedin.com/in/geomining-id-37b274387/" ariaLabel="LinkedIn" />
+              <SocialLink icon={<Instagram size={18} />} href="https://www.instagram.com/geomining.id" ariaLabel="Instagram Geomining" />
+              <SocialLink icon={<Mail size={18} />} href="mailto:support@geomining.id" ariaLabel="Email" />
             </div>
           </div>
 
@@ -79,23 +99,17 @@ export default function Footer() {
         <div className="mt-16 md:mt-20 pt-8 border-t border-white/10 flex flex-col gap-6 md:gap-8">
           
           {/* Legal Disclaimer (Sekarang di atas) */}
-          <div className="text-[10px] sm:text-xs text-slate-500/60 leading-relaxed text-center md:text-left max-w-6xl">
+          <div className="text-[10px] sm:text-xs mx-auto text-justify text-slate-500/60 leading-relaxed text-center md:text-left max-w-6xl">
             <span className="font-semibold text-slate-500/80 uppercase tracking-wider mr-1">Disclaimer:</span> 
             Informasi yang terdapat pada situs web ini disediakan hanya untuk tujuan informasi umum. PT. Karya Nusa Geomining berhak mengubah, memperbarui, atau menghapus informasi sewaktu-waktu tanpa pemberitahuan sebelumnya. Kami tidak bertanggung jawab atas kerugian, kerusakan, atau konsekuensi hukum yang mungkin timbul akibat penggunaan atau ketergantungan pada informasi yang disajikan di situs ini.
           </div>
 
           {/* Copyright & Socials (Sekarang di paling bawah) */}
-          <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-6 pt-4 md:pt-6 border-t border-white/5">
+          <div className="mx-auto gap-6 pt-4 md:pt-6 border-t border-white/5">
             <p className="text-slate-500 text-xs md:text-sm font-medium text-center md:text-left">
               © {new Date().getFullYear()} PT. Karya Nusa Geomining. All Rights Reserved.
             </p>
 
-            {/* Social Icons */}
-            <div className="flex items-center gap-3">
-              <SocialLink icon={<Linkedin size={18} />} href="https://www.linkedin.com/in/geomining-id-37b274387/" ariaLabel="LinkedIn" />
-              <SocialLink icon={<Instagram size={18} />} href="https://www.instagram.com/geomining.id" ariaLabel="Instagram Geomining" />
-              <SocialLink icon={<Mail size={18} />} href="mailto:support@geomining.id" ariaLabel="Email" />
-            </div>
           </div>
 
         </div>

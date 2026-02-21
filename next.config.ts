@@ -1,16 +1,29 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
+const nextConfig = {
+  // ... konfigurasi lain
   images: {
-    domains: ['images.unsplash.com', 'raw.githubusercontent.com'],
     remotePatterns: [
+      // Tambahkan Cloudinary di sini
       {
         protocol: 'https',
-        hostname: '**', // Mengizinkan semua domain (untuk testing)
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/**',
+      },{
+        protocol: 'https',
+        hostname: 'images.unsplash.com', // Tambahkan Unsplash
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.imgur.com', // Tambahkan Imgur
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co', // Tambahkan Imgur
       },
     ],
   },
-  reactStrictMode: true,
-};
+}
 
 export default nextConfig;

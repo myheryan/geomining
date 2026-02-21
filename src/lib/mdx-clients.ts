@@ -7,6 +7,8 @@ import remarkGfm from "remark-gfm";
 import remarkUnwrapImages from 'remark-unwrap-images';
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 import { ContentType, PickFrontmatter, PostContent } from "@/types/insight";
 
@@ -94,14 +96,13 @@ export async function getFileBySlug<T extends ContentType>(
       cwd: join(CONTENT_PATH, type),
       mdxOptions(options) {
         options.remarkPlugins = [
-          ...(options.remarkPlugins ?? []), 
-          remarkGfm, 
+          ...(options.remarkPlugins ?? []), remarkGfm, remarkUnwrapImages, remarkMath,
           remarkUnwrapImages 
         ];
         
         options.rehypePlugins = [
           ...(options.rehypePlugins ?? []),
-          rehypeSlug,
+          rehypeSlug, rehypeKatex,
           [
             rehypePrettyCode,
             {

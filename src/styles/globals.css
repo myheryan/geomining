@@ -201,6 +201,12 @@ body {
     }
     
 }
+
+
+
+
+
+
 /* Memberikan jarak agar heading tidak tertutup sticky header saat diklik dari TOC */
 h2, h3 {
   scroll-margin-top: 100px; /* Sesuaikan dengan tinggi header kamu */

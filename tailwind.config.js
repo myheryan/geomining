@@ -4,6 +4,16 @@ module.exports = {
 darkMode: 'class', // TAMBAHKAN BARIS INI
 theme: {
   extend: {
+
+          typography: (theme) => ({
+        DEFAULT: {
+          css: {
+            'h1, h2, h3, h4': {
+              'scroll-margin-top': '100px',
+            },
+          },
+        },
+          }),
     animation: {
       "spin-slower": "spin 60s linear infinite",
       "spin-reverse": "spinReverse 40s linear infinite",
@@ -17,10 +27,9 @@ theme: {
   },
 },
 content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+
 plugins: [
   [tailwindAnimate], [typography],
 ],

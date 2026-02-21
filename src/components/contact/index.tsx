@@ -7,13 +7,16 @@ import {
   ArrowUpRight, Loader2, 
 } from "lucide-react";
 
+
 // --- EXTERNAL IMPORTS ---
 import { useContactForm } from "@/hooks/useContactForm"; 
+import { SuccessState } from "./SuccessState";
 
 const CATEGORIES = [
-  { id: 'dev', label: 'Development' },
-  { id: 'design', label: 'UI/UX Design' },
-  { id: 'ai', label: 'AI & Data' },
+  { id: 'consulting', label: 'Consulting' },
+  { id: 'education', label: 'Education' },
+  { id: 'helps', label: 'Helps' },
+   { id: 'others', label: 'Others' }
 ];
 
 // --- ANIMATION VARIANTS ---
@@ -33,6 +36,7 @@ export default function ContactSectionBlueGrid() {
     captchaValue, setCaptchaValue, recaptchaRef, 
     showThanks, setShowThanks 
   } = useContactForm();
+
 
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
@@ -62,36 +66,9 @@ useEffect(() => {
 
   return (
     // Ubah background dasar menjadi sedikit lebih kebiruan di light mode
-    <section className="relative min-h-screen flex items-center justify-center py-20 px-6 font-sans overflow-hidden bg-slate-50/50 dark:bg-[#0a0a0a] text-slate-900 dark:text-white transition-colors duration-700">
+    <section className="relative min-h-screen flex items-center justify-center py-20 px-6 font-sans overflow-hidden text-slate-900 dark:text-white transition-colors duration-700" id='contact'>
       
-
-   
-      <div className="absolute inset-0 z-0 pointer-events-none">
-      {/* Light Mode Grid */}
-      <div className="absolute inset-0 opacity-[0.2] dark:opacity-0 transition-opacity duration-500" 
-      style={{ 
-      backgroundImage: 'linear-gradient( #c4c5c5bc 1px, transparent 1px), linear-gradient(90deg, #c4c5c5bc 1px, transparent 1px)', 
-      backgroundSize: '80px 80px' 
-      }}    
-      />
-      {/* Dark Mode Grid */}
-      <div 
-      className="absolute inset-0 opacity-0 dark:opacity-[0.2] transition-opacity duration-500" 
-      style={{ 
-      backgroundImage: 'linear-gradient(#0289ffd0 1px, transparent 1px), linear-gradient(90deg, #0289ffd0 1px, transparent 1px)', 
-      backgroundSize: '80px 80px' 
-      }} 
-      />
-      <div className="absolute top-0 left-1 w-[800px] h-[320px] blur-[120px] bg-gray-300 dark:bg-sky-500/20 blur-[120px] opacity-0 dark:opacity-100" />
-      {/* 2. Sub-Grid Titik-titik Presisi (Adaptif Light/Dark) */}
-      <div className="absolute inset-0 text-[#c5d7f7]/90 dark:text-sky-400/20 transition-colors duration-500" 
-      style={{ 
-      backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', 
-      backgroundSize: '20px 20px' 
-      }} 
-      />
-      </div>
-
+      <div className="absolute top-1/2 left-1/4 w-[800px] h-[320px] blur-[120px] bg-gray-300 dark:bg-sky-500/20 blur-[120px] opacity-0 dark:opacity-100 z-0 pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-6xl flex flex-col lg:flex-row gap-12 lg:gap-20">
         
@@ -110,13 +87,13 @@ useEffect(() => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-600"></span>
               </span>
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-blue-200/50">System Status: Online</span>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-blue-200/50">Don’t hesitate to,</span>
             </div>
             <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-tight">
-              Initiate <br/>
+              Get In Touch <br/>
               {/* Gradient text biru ke cyan */}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500">
-                Collaboration.
+               with Us
               </span>
             </h1>
           </motion.div>
@@ -169,28 +146,28 @@ useEffect(() => {
                           type="text" required
                           // Focus ring warna biru
                           className="w-full border rounded-2xl px-5 py-4 outline-none transition-all bg-white/50 border-slate-200 dark:bg-black/20 dark:border-white/10 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
-                          placeholder="Citizen ID"
+                          placeholder="Name"
                           value={formData.name}
                           onChange={(e) => handleChange('name', e.target.value)}
                         />
                       </div>
                       <div className="flex-1 space-y-2">
-                        <label className="text-[10px] font-bold uppercase tracking-widest ml-2 text-slate-400">Contact</label>
+                        <label className="text-[10px] font-bold uppercase tracking-widest ml-2 text-slate-400">Email</label>
                         <input
                           type="email" required
                           className="w-full border rounded-2xl px-5 py-4 outline-none transition-all bg-white/50 border-slate-200 dark:bg-black/20 dark:border-white/10 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
-                          placeholder="email@network.com"
+                          placeholder="your@email.com"
                           value={formData.email}
                           onChange={(e) => handleChange('email', e.target.value)}
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold uppercase tracking-widest ml-2 text-slate-400">Directive</label>
+                      <label className="text-[10px] font-bold uppercase tracking-widest ml-2 text-slate-400">Messages</label>
                       <textarea
                         required rows={4}
                         className="w-full border rounded-2xl px-5 py-4 outline-none transition-all resize-none bg-white/50 border-slate-200 dark:bg-black/20 dark:border-white/10 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
-                        placeholder="Input project parameters..."
+                        placeholder="write a message..."
                         value={formData.message}
                         onChange={(e) => handleChange('message', e.target.value)}
                       />
@@ -212,28 +189,14 @@ useEffect(() => {
                       className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 transition-all disabled:opacity-50"
                     >
                       {loader ? <Loader2 size={18} className="animate-spin" /> : <ArrowUpRight size={18} />}
-                      <span className="text-xs uppercase tracking-widest">Execute Transmission</span>
+                      <span className="text-xs uppercase tracking-widest">Send Message</span>
                     </motion.button>
                   </div>
                 </div>
               </motion.form>
             ) : (
               // Success State (Blue Theme)
-              <motion.div 
-                key="success"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="p-12 text-center rounded-[40px] bg-white/40 dark:bg-white/5 backdrop-blur-xl border border-blue-100 dark:border-white/10 shadow-2xl"
-              >
-                <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-600/40">
-                  <ArrowUpRight size={40} className="text-white" />
-                </div>
-                <h2 className="text-3xl font-black mb-2">Transmission Sent.</h2>
-                <p className="text-slate-500 dark:text-white/40 mb-8">We will establish connection shortly.</p>
-                <button onClick={() => setShowThanks(false)} className="text-blue-600 font-bold uppercase tracking-widest text-xs hover:underline">
-                  New Transmission
-                </button>
-              </motion.div>
+              <SuccessState onReset={() => setShowThanks(false)}/>
             )}
           </AnimatePresence>
         </motion.div>

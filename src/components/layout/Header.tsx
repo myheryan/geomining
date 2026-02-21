@@ -13,7 +13,7 @@ const navLinks = [
   { name: 'Home', href: '/', icon: Home },
   { name: 'Insight', href: '/insight', icon: LayoutGrid },
   { name: 'Profile', href: '/profile', icon: Info },
-  { name: 'Projects', href: '/projects', icon: Send },
+  { name: 'Contact', href: '/#contact', icon: Send },
 ];
 
 export default function Header() {
@@ -32,6 +32,9 @@ export default function Header() {
 
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
 
+
+  const src = theme === "dark" ? "/img/logo-dark.png" : "/img/logo-light.png"
+
   return (
     <>
       <header
@@ -45,10 +48,10 @@ export default function Header() {
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center justify-between">
             
-                      {/* LOGO */}
+          {/* LOGO */}
           <Link href="/" className="relative h-12 w-48 transition-transform active:scale-95">
             <Image 
-              src="/img/logogeo.png" 
+              src={src}
               alt="geomining" 
               fill 
               priority

@@ -2,7 +2,7 @@ import * as React from "react";
 import Image from "next/image";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { getMDXComponent } from "mdx-bundler/client";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import { ParsedUrlQuery } from 'querystring';
 
 // Components
@@ -58,44 +58,23 @@ interface ContextParams extends ParsedUrlQuery {
   slug: string;
 }
 
-// --- HELPER COMPONENT ---
 const MDXRenderer = ({ code }: { code: string }) => {
-  const [Component, setComponent] = React.useState<React.ComponentType<{
-    components: typeof mdxComponents;
-  }> | null>(null);
-
-  React.useEffect(() => {
-    const MdxComponent = getMDXComponent(code) as React.ComponentType<{
-      components: typeof mdxComponents;
-    }>;
-    setComponent(() => MdxComponent);
-  }, [code]);
-
-  if (!Component) return null;
-
-  return <Component components={mdxComponents} />;
+  const Component = React.useMemo(() => getMDXComponent(code), [code]);
+  return React.useMemo(() => (
+    React.createElement(Component, { components: mdxComponents })
+  ), [Component]);
 };
 
 // --- MAIN PAGE ---
 export default function SingleInsightPage({ 
-  code, 
-  frontmatter, 
-  toc, 
-  slug, 
-  minLevel, 
-  relatedPosts 
+  code, frontmatter, toc, slug, minLevel, relatedPosts 
 }: SingleInsightProps) {
   
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
 
 
+const activeSection = useScrollSpy( "h2, h3", code,{ offset: 120 } );
 
-const activeSection = useScrollSpy("h2, .mdx h3", code);  
+
   if (!frontmatter) {
     return (
       <Layout key="error-layout">
@@ -107,17 +86,11 @@ const activeSection = useScrollSpy("h2, .mdx h3", code);
   }
 
   return (
-    <Layout key={slug}>
-      {/* 2. OPTIONAL CHAINING & FALLBACK: Pastikan property dibaca dengan aman */}
+<Layout key={slug}>
       <HeadMeta 
-        templateTitle={frontmatter?.title || "Artikel Tanpa Judul"} 
-        description={frontmatter?.description || ""} 
+        templateTitle={frontmatter?.title} 
+        description={frontmatter?.description} 
         ogImage={frontmatter?.image} 
-      />
-
-      <motion.div 
-        className="fixed top-0 left-0 right-0 h-1 bg-sky-500 origin-left z-[60]"
-        style={{ scaleX }}
       />
 
       <section className="relative w-full">
@@ -147,53 +120,28 @@ const activeSection = useScrollSpy("h2, .mdx h3", code);
         </div>
       </section>
 
-      {/* 3. MAIN CONTENT & SIDEBAR GRID */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
-        
-        {/* Kolom Kiri: Artikel MDX */}
-        <main className="w-full">
-          <article className="
-            mdx prose mx-auto mt-4 w-full transition-colors 
-            prose-slate dark:prose-invert max-w-none 
-            prose-img:rounded-3xl prose-figure:my-12
-            prose-headings:scroll-mt-32
-            prose-p:text-slate-600 dark:prose-p:text-slate-300
-            prose-strong:text-slate-900 dark:prose-strong:text-white
-          ">
+<section className="mx-auto max-w-7xl px-4 lg:grid lg:grid-cols-[1fr_300px] lg:gap-12">
+        <main className="min-w-0">
+          <article className="prose prose-slate dark:prose-invert max-w-none">
             <MDXRenderer code={code} />
           </article>
-
-          {/* Area Interaksi & Related Posts di bawah artikel */}
-          <div className="mt-24">
-             {/* Jika kamu ingin menambahkan tombol 'Like/Kudos' seperti di HTML referensi, taruh di sini */}
-             <div className="border-t border-slate-200 dark:border-neutral-800">
-               <RelatedPosts posts={relatedPosts} />
-             </div>
+          
+          <div className="mt-16 pt-8 border-t dark:border-slate-800">
+            <RelatedPosts posts={relatedPosts} />
           </div>
         </main>
-        
-        {/* Kolom Kanan: Sticky Sidebar (TOC) */}
+
         <aside className="hidden lg:block">
-          <div className="sticky top-20">
-            <div className="max-h-[calc(100vh-9rem-113px)] overflow-auto  hidden lg:block">
-              <TableOfContents 
-                toc={toc} 
-                minLevel={minLevel} 
-                activeSection={activeSection} 
-              />
-            </div>
-            
-            {/* Share Widget Option (Sama seperti referensi HTML) */}
-            <div className="mt-8 p-6 rounded-xl border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-900/50">
-              <h4 className="text-sm font-bold mb-2">Share this article</h4>
-              <p className="text-xs text-slate-500 mb-4">Jika artikel ini membantumu, silakan bagikan ke rekan developer lainnya!</p>
-              {/* Tempatkan tombol share-mu di sini */}
-            </div>
+          <div className="sticky top-24 pt-12">
+            <TableOfContents 
+              toc={toc} 
+              minLevel={minLevel} 
+              activeSection={activeSection} 
+            />
           </div>
         </aside>
-
       </section>
-
+      
       <MobileTOC toc={toc} activeSection={activeSection} minLevel={minLevel} />
     </Layout>
   );

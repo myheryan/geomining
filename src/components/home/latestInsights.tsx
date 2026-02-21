@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, Calendar, Clock } from "lucide-react";
 
 // Dummy data
 const insights = [
@@ -41,38 +41,7 @@ const insights = [
 
 export default function LatestInsights() {
   return (
-    <section className="relative py-24 bg-slate-50 dark:bg-slate-950 transition-colors duration-500 overflow-hidden">
-      
-      {/* --- BACKGROUND GRIDS --- */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* Light Mode Grid */}
-        <div 
-          className="absolute inset-0 opacity-20 dark:opacity-0 transition-opacity duration-500" 
-          style={{ 
-            backgroundImage: 'linear-gradient(#c4c5c5 1px, transparent 1px), linear-gradient(90deg, #c4c5c5 1px, transparent 1px)', 
-            backgroundSize: '80px 80px' 
-          }}    
-        />
-        {/* Dark Mode Grid */}
-        <div 
-          className="absolute inset-0 opacity-0 dark:opacity-20 transition-opacity duration-500" 
-          style={{ 
-            backgroundImage: 'linear-gradient(#0ea5e9 1px, transparent 1px), linear-gradient(90deg, #0ea5e9 1px, transparent 1px)', 
-            backgroundSize: '80px 80px' 
-          }} 
-        />
-        {/* Dot Grid (Adaptive) */}
-        <div 
-          className="absolute inset-0 text-slate-300 dark:text-sky-400/10 transition-colors duration-500" 
-          style={{ 
-            backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', 
-            backgroundSize: '20px 20px' 
-          }} 
-        />
-        {/* Ambient Glow for Dark Mode */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/2 bg-sky-500/5 dark:bg-sky-500/10 blur-[120px] rounded-full pointer-events-none transition-opacity duration-500" />
-      </div>
-
+    <section className="relative py-24 overflow-hidden">     
       <div className="container relative z-10 mx-auto px-6 max-w-7xl">
         
         {/* --- HEADER --- */}
@@ -124,32 +93,34 @@ export default function LatestInsights() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Gradient Overlay: Diperbarui agar bagian bawah agak gelap supaya teks putih terbaca */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 transition-opacity duration-300" />
                     
                     {/* Floating Category Badge */}
                     <div className="absolute top-4 left-4 px-4 py-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider shadow-sm">
                       {post.category}
                     </div>
-                  </div>
 
-                  {/* Content Container */}
-                  <div className="flex flex-col flex-grow p-6 lg:p-8">
-                    <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mb-4 font-medium">
-                      <span>{post.date}</span>
-                      <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
+                    {/* Metadata (Tanggal & Read Time) dipindah ke dalam gambar (kiri bawah) */}
+                    <div className="absolute bottom-4 left-4 flex items-center gap-3 text-xs text-white font-medium z-10">
+                      <span className="flex items-center gap-1.5"><Calendar size={14} />{post.date}</span>
+                      <span className="w-1 h-1 rounded-full bg-white/60"></span>
                       <span className="flex items-center gap-1.5">
                         <Clock size={14} /> {post.readTime}
                       </span>
                     </div>
+                  </div>
 
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-snug mb-3 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors duration-300">
+                  {/* Content Container */}
+                  <div className="flex flex-col flex-grow p-4">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-6 mb-3 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors duration-300">
                       {post.title}
                     </h3>
                     
-                    <p className="text-slate-600 dark:text-slate-400 line-clamp-3 mb-6 flex-grow leading-relaxed">
+                    <p className="text-slate-600 dark:text-slate-400 line-clamp-2 flex-grow leading-relaxed">
                       {post.excerpt}
                     </p>
-
                   </div>
                 </article>
               </Link>

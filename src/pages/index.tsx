@@ -5,6 +5,8 @@ import AboutUs from "@/components/home/aboutUs";
 import MentorExpertise from "@/components/home/mentorExpertise";
 import ContactSection from "@/components/contact";
 import LatestInsights  from "@/components/home/latestInsights";
+import SoftwareUs from "@/components/home/software-us";
+
 /* ... import lainnya
 import { GetStaticProps } from 'next';
 
@@ -59,6 +61,7 @@ export default function HomePage() {
 
         <AboutUs />
         <MentorExpertise />
+        <SoftwareUs />
         <LatestInsights />
         <ContactSection />
         </main>

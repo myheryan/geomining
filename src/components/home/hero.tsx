@@ -5,10 +5,9 @@ import Geomining from "@/components/ui/geomining";
 
 
 const allSlides = [
-  { id: "slide-1", type: "video", subtitle: "CHAPTER 1", title: "The Beginning", description: "Langkah awal menuju platform masa depan dengan kecepatan tak tertandingi.", media: "/video/geo-video.mp4", tag: "Chapter 1" },
-  { id: "slide-2", type: "image", subtitle: "CHAPTER 2", title: "Data Insights", description: "Visualisasi data real-time untuk keputusan yang lebih tajam.", media: "/img/materi/materi-1.jpeg", tag: "Chapter 2" },
-  { id: "slide-3", type: "video", subtitle: "CHAPTER 3", title: "Global Cloud", description: "Terhubung ke seluruh dunia dengan infrastruktur cloud 99.9% uptime.", media: "/video/geo-video.mp4", tag: "Chapter 3" },
-  { id: "slide-4", type: "image", subtitle: "CHAPTER 4", title: "Core Security", description: "Pertahanan tingkat militer untuk data sensitif perusahaan Anda.", media: "/img/materi/materi-2.jpeg", tag: "Chapter 4" },
+  { id: "slide-1", type: "video", subtitle: "CHAPTER 1", title: "Tech-Based Analysis", description: "Analisa Berbasis Teknologi & Software Terkini Kami menggunakan software industri seperti Slide2, Slide3, RS2, RS3, Surpac, Minescape, Leapfrog, dan tools geoteknik lainnya untuk menghasilkan analisa yang akurat, terukur, dan dapat dipertanggungjawabkan secara teknis.", media: "/video/geo-video.mp4", tag: "Chapter 1" },
+  { id: "slide-2", type: "image", subtitle: "CHAPTER 2", title: "Practical & Field-Oriented Approach", description: "Pendekatan Praktis Berbasis Kondisi Pendekatan Praktis Berbasis Kondisi Lapangan Tidak hanya teori dan simulasi, setiap rekomendasi kami mempertimbangkan kondisi geologi, geoteknik, operasional tambang, dan faktor keselamatan di lapangan.", media: "/img/materi/materi-1.jpeg", tag: "Chapter 2" },
+  { id: "slide-3", type: "video", subtitle: "CHAPTER 3", title: "Expert-Led Consulting", description: "Terhubung ke seluruh dunia dengan infrastruktur cloud 99.9% uptDidukung oleh Praktisi & Akademisi Berpengalaman Tim kami terdiri dari profesional pertambangan yang berpengalaman dalam desain lereng, analisa kestabilan, hidrogeologi, dan perencanaan tambang — memastikan solusi yang aplikatif dan bernilai ekonomis.", media: "/video/geo-video.mp4", tag: "Chapter 3" },
 ];
 
 
@@ -82,13 +81,6 @@ export default function ModernAdaptiveHero() {
               </motion.div>
             </AnimatePresence>
           </div>
-
-          <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-8 group relative px-8 py-3.5 bg-sky-500 hover:bg-sky-400 text-white dark:text-slate-950 font-bold rounded-xl shadow-lg dark:shadow-[0_0_30px_-10px_rgba(14,165,233,0.6)] overflow-hidden transition-all duration-300 w-full sm:w-auto">
-            <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-            <span className="relative flex items-center justify-center gap-2">
-              Deploy Project <ArrowUpRight size={20} />
-            </span>
-          </motion.button>
         </div>
 
         {/* ========================================================= */}
